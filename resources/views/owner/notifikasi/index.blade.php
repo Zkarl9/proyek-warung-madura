@@ -60,7 +60,14 @@
                 </div>
             </div>
         </div>
-
-     
+        
+        {{-- SUBMIT --}}
+        <div class="flex justify-end pt-2">
+            <button type="submit"
+                    class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl font-black text-sm uppercase tracking-wider shadow-lg hover:shadow-indigo-500/20 active:scale-95 transition-all">
+                Simpan Konfigurasi Sistem
+            </button>
+        </div>
+    </form>
 </div>
 @endsection
