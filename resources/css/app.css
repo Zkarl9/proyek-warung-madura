@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --color-base: #F4F6F5;
+    --color-surface: #FFFFFF;
+    --color-ink: #16241F;
+    --color-mist: #E1E6E3;
+
+    --color-teal: #0F6E64;
+    --color-teal-deep: #0B4F48;
+    --color-teal-soft: #E4F1EF;
+
+    --color-amber: #E8A33D;
+    --color-amber-soft: #FBEDD3;
+
+    --color-terracotta: #C9483B;
+    --color-terracotta-soft: #F8E2DF;
+
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+
+    --radius-tag: 6px;
+}
+
+@layer base {
+  body {
+    @apply bg-base text-ink font-body antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  /* Indikator sinyal kamera/Raspi — elemen ciri khas halaman ini */
+  .status-dot {
+    @apply relative inline-flex h-2.5 w-2.5 rounded-full;
+  }
+  .status-dot::after {
+    content: '';
+    @apply absolute inset-0 rounded-full animate-ping;
+    background-color: currentColor;
+    opacity: 0.5;
+  }
+
+  /* Label nav ala label rak warung: aksen kiri solid saat aktif */
+  .nav-tag {
+    @apply flex items-center gap-3 rounded-tag px-4 py-2.5 text-sm font-medium text-ink/70 border-l-[3px] border-transparent transition-colors;
+  }
+  .nav-tag.is-active {
+    @apply bg-teal-soft text-teal-deep border-teal;
+  }
+  .nav-tag:hover:not(.is-active) {
+    @apply bg-mist/60 text-ink;
+  }
+
+  .card {
+    @apply bg-surface border border-mist rounded-xl p-5;
+  }
+
+  .btn-primary {
+    @apply px-6 py-2.5 bg-teal rounded-lg text-surface font-medium text-sm hover:bg-teal-deep transition-colors;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-2.5 bg-mist rounded-lg text-ink font-medium text-sm hover:bg-mist/80 transition-colors;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-tag text-xs font-medium;
+  }
+
+  .badge-teal {
+    @apply bg-teal-soft text-teal-deep;
+  }
+
+  .badge-amber {
+    @apply bg-amber-soft text-amber;
+  }
+
+  .badge-terracotta {
+    @apply bg-terracotta-soft text-terracotta;
+  }
+}
