@@ -5,28 +5,33 @@
 @section('page-subtitle', 'Ringkasan stok warung hari ini')
 
 @section('content')
-<div class="space-y-4">
+<div class="space-y-6">
 
     {{-- PENGUMUMAN DARI ADMIN --}}
     @if ($pengumuman->isNotEmpty())
         @foreach ($pengumuman as $pengumumanItem)
-        <div id="announcementCard-{{ $pengumumanItem->id }}" class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-600 rounded-l-xl"></div>
-            <div class="pl-3">
-                <div class="flex items-start justify-between gap-3">
+        <div id="announcementCard-{{ $pengumumanItem->id }}" class="bg-gradient-to-r from-blue-50 to-indigo-50/50 border border-blue-100 rounded-2xl p-5 relative overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md">
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-blue-600 to-indigo-600"></div>
+            <div class="pl-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div class="min-w-0 flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold px-2 py-0.5 bg-blue-600 text-white rounded-full">📢 Pengumuman Admin</span>
-                            <span class="text-xs text-slate-400">{{ $pengumumanItem->created_at->diffForHumans() }}</span>
+                        <div class="flex items-center gap-2.5 mb-2">
+                            <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-blue-600 text-white rounded-full shadow-sm shadow-blue-100">
+                                <span>📢</span> Pengumuman Admin
+                            </span>
+                            <span class="text-xs font-medium text-slate-400">{{ $pengumumanItem->created_at->diffForHumans() }}</span>
                         </div>
-                        <p class="font-bold text-blue-900 text-sm">{{ $pengumumanItem->judul }}</p>
-                        <p class="text-sm text-blue-700 mt-0.5">{{ $pengumumanItem->isi }}</p>
+                        <h4 class="font-bold text-slate-800 text-base mb-1">{{ $pengumumanItem->judul }}</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed">{{ $pengumumanItem->isi }}</p>
+                        
                         @if ($pengumumanItem->label_ids)
-                        <div class="mt-2">
-                            <p class="text-xs text-blue-600 font-semibold mb-1">🏷️ Label YOLO yang bisa digunakan:</p>
+                        <div class="mt-3.5 bg-white/60 backdrop-blur-sm border border-blue-100/80 rounded-xl p-3">
+                            <p class="text-xs text-blue-700 font-semibold mb-2 flex items-center gap-1">
+                                <span>🏷️</span> Label YOLO yang bisa digunakan:
+                            </p>
                             <div class="flex flex-wrap gap-1.5">
                                 @foreach (explode(',', $pengumumanItem->label_ids) as $label)
-                                <code class="px-2.5 py-1 bg-white border border-blue-300 text-blue-700 text-xs font-mono rounded-lg font-bold">
+                                <code class="px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-mono rounded-lg font-bold shadow-sm">
                                     {{ trim($label) }}
                                 </code>
                                 @endforeach
@@ -34,14 +39,15 @@
                         </div>
                         @endif
                     </div>
-                    <div class="flex items-center gap-2">
+                    
+                    <div class="flex items-center gap-2 sm:self-start flex-shrink-0">
                         <a href="{{ route('owner.products.index') }}"
-                           class="flex-shrink-0 text-xs font-semibold bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition">
+                           class="inline-flex items-center justify-center text-xs font-semibold bg-white text-blue-600 border border-blue-200 px-4 py-2 rounded-xl hover:bg-blue-50 hover:text-blue-700 transition active:scale-95 shadow-sm">
                             Lihat Produk
                         </a>
-                        <button type="button" class="dismissAnnouncement flex-shrink-0 text-xs font-semibold bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-200 transition"
+                        <button type="button" class="dismissAnnouncement inline-flex items-center justify-center text-xs font-semibold bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition active:scale-95 shadow-md shadow-blue-200"
                             data-announcement-id="{{ $pengumumanItem->id }}">
-                            Oke
+                            Mengerti
                         </button>
                     </div>
                 </div>
@@ -51,70 +57,98 @@
     @endif
 
     {{-- HEADER --}}
-    <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 md:p-6 text-white shadow-lg">
-        <div class="flex items-center justify-between gap-3">
+    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+        <div class="absolute right-0 top-0 translate-x-1/4 -translate-y-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h2 class="text-lg md:text-2xl font-bold">📊 Dashboard</h2>
-                <p class="text-blue-100 text-sm mt-0.5">{{ now()->translatedFormat('l, d M Y') }}</p>
+                <h2 class="text-xl md:text-3xl font-black tracking-tight flex items-center gap-2">
+                    <span>📊</span> Dashboard Pemilik
+                </h2>
+                <p class="text-slate-300 text-xs md:text-sm mt-1 font-medium bg-slate-800/40 inline-block px-3 py-1 rounded-lg backdrop-blur-sm border border-white/5">
+                    📅 {{ now()->translatedFormat('l, d M Y') }}
+                </p>
             </div>
         </div>
     </div>
 
     {{-- STATS GRID --}}
-    <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <div class="bg-white rounded-xl shadow border border-slate-200 p-4">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Produk</p>
-            <p class="text-3xl font-bold text-slate-900 mt-1">{{ $totalProduk }}</p>
-            <p class="text-xs text-slate-400 mt-1">produk terdaftar</p>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-500 transition-colors">Total Produk</p>
+                <span class="text-lg p-2 bg-slate-50 rounded-xl group-hover:bg-slate-100 transition-colors">📦</span>
+            </div>
+            <p class="text-2xl md:text-4xl font-black text-slate-800 mt-2 tracking-tight">{{ $totalProduk }}</p>
+            <p class="text-xs font-medium text-slate-400 mt-1">Produk terdaftar aktif</p>
         </div>
-        <div class="bg-white rounded-xl shadow border border-slate-200 p-4">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Stok Tipis</p>
-            <p class="text-3xl font-bold mt-1 {{ $stokTipis->count() > 0 ? 'text-red-500' : 'text-green-600' }}">
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-500 transition-colors">Stok Tipis</p>
+                <span class="text-lg p-2 {{ $stokTipis->count() > 0 ? 'bg-red-50' : 'bg-green-50' }} rounded-xl transition-colors">⚠️</span>
+            </div>
+            <p class="text-2xl md:text-4xl font-black mt-2 tracking-tight {{ $stokTipis->count() > 0 ? 'text-rose-500' : 'text-emerald-500' }}">
                 {{ $stokTipis->count() }}
             </p>
-            <p class="text-xs text-slate-400 mt-1">perlu restock</p>
+            <p class="text-xs font-medium text-slate-400 mt-1">Perlu restock segera</p>
         </div>
-        <div class="bg-white rounded-xl shadow border border-slate-200 p-4">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Terjual 7 Hari</p>
-            <p class="text-3xl font-bold text-blue-600 mt-1 font-mono">{{ $grafikMingguan->sum('total') }}</p>
-            <p class="text-xs text-slate-400 mt-1">item terjual</p>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-500 transition-colors">Terjual (7 Hari)</p>
+                <span class="text-lg p-2 bg-blue-50 rounded-xl group-hover:bg-blue-100 transition-colors">📈</span>
+            </div>
+            <p class="text-2xl md:text-4xl font-black text-blue-600 mt-2 tracking-tight font-mono">{{ $grafikMingguan->sum('total') }}</p>
+            <p class="text-xs font-medium text-slate-400 mt-1">Item keluar seminggu</p>
         </div>
-        <div class="bg-white rounded-xl shadow border border-slate-200 p-4">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Keluar Hari Ini</p>
-            <p class="text-3xl font-bold text-slate-900 mt-1 font-mono">{{ $itemTerjualHariIni }}</p>
-            <p class="text-xs text-slate-400 mt-1">item terdeteksi</p>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-500 transition-colors">Keluar Hari Ini</p>
+                <span class="text-lg p-2 bg-indigo-50 rounded-xl group-hover:bg-indigo-100 transition-colors">✨</span>
+            </div>
+            <p class="text-2xl md:text-4xl font-black text-slate-800 mt-2 tracking-tight font-mono">{{ $itemTerjualHariIni }}</p>
+            <p class="text-xs font-medium text-slate-400 mt-1">Item deteksi YOLO</p>
         </div>
     </div>
 
     {{-- STOK TIPIS + GRAFIK --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {{-- Stok Tipis --}}
-        <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
-            <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-3.5 flex items-center gap-2">
-                <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
-                <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Stok Tipis</h3>
+        {{-- Stok Tipis (SCROLLABLE) --}}
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[380px]">
+            <div class="border-b border-slate-100 px-5 py-4 flex items-center justify-between bg-slate-50/50 flex-shrink-0">
+                <div class="flex items-center gap-2">
+                    <span class="h-2.5 w-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+                    <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider">Peringatan Stok</h3>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg">{{ $stokTipis->count() }} Produk</span>
             </div>
-            <div class="p-5">
+            <div class="p-5 overflow-y-auto flex-1 scrollbar-thin">
                 @if ($stokTipis->isEmpty())
-                    <div class="text-center py-6">
-                        <p class="text-2xl mb-1">✅</p>
-                        <p class="text-sm text-slate-400">Semua stok masih aman.</p>
+                    <div class="text-center py-12">
+                        <div class="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <span class="text-xl">✅</span>
+                        </div>
+                        <p class="text-sm font-semibold text-slate-700">Semua Stok Aman!</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Tidak ada produk kritis.</p>
                     </div>
                 @else
-                    <div class="space-y-3">
+                    <div class="space-y-4">
                         @foreach ($stokTipis as $produk)
                         @php $persen = $produk->stok_minimum > 0 ? min(100, ($produk->stok_pajangan / $produk->stok_minimum) * 100) : 0; @endphp
                         <div>
-                            <div class="flex items-center justify-between mb-1.5">
-                                <span class="text-sm font-medium text-slate-800 truncate">{{ $produk->nama_produk }}</span>
-                                <span class="text-xs px-2 py-0.5 rounded-full font-mono font-bold ml-2 flex-shrink-0
-                                    {{ $produk->stok_pajangan == 0 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700' }}">
+                            <div class="flex items-center justify-between mb-1.5 gap-2">
+                                <span class="text-sm font-semibold text-slate-700 truncate" title="{{ $produk->nama_produk }}">
+                                    {{ $produk->nama_produk }}
+                                </span>
+                                <span class="text-xs px-2.5 py-0.5 rounded-lg font-mono font-bold flex-shrink-0 shadow-sm
+                                    {{ $produk->stok_pajangan == 0 ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-amber-50 text-amber-600 border border-amber-100' }}">
                                     {{ $produk->stok_pajangan }} {{ $produk->satuan }}
                                 </span>
                             </div>
-                            <div class="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                                <div class="h-full rounded-full {{ $produk->stok_pajangan == 0 ? 'bg-red-500' : 'bg-amber-400' }}"
+                            <div class="h-2 rounded-full bg-slate-100 overflow-hidden shadow-inner">
+                                <div class="h-full rounded-full transition-all duration-500 {{ $produk->stok_pajangan == 0 ? 'bg-gradient-to-r from-rose-500 to-red-500' : 'bg-gradient-to-r from-amber-400 to-orange-400' }}"
                                      style="width: {{ $persen }}%"></div>
                             </div>
                         </div>
@@ -125,41 +159,46 @@
         </div>
 
         {{-- Grafik Mingguan --}}
-        <div class="lg:col-span-2 bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
-            <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-3.5 flex items-center gap-2">
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[380px]">
+            <div class="border-b border-slate-100 px-5 py-4 flex items-center gap-2 bg-slate-50/50 flex-shrink-0">
                 <span class="h-2.5 w-2.5 rounded-full bg-blue-500"></span>
-                <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Tren Barang Keluar (7 Hari)</h3>
+                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider">Tren Barang Keluar (7 Hari Terakhir)</h3>
             </div>
-            <div class="p-5">
-                <canvas id="grafikMingguan" height="120"></canvas>
+            <div class="p-5 flex-1 flex items-center justify-center">
+                <div class="w-full h-full min-h-[260px]">
+                    <canvas id="grafikMingguan"></canvas>
+                </div>
             </div>
         </div>
     </div>
 
     {{-- BARANG TERLARIS --}}
-    <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
-        <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-3.5 flex items-center gap-2">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="border-b border-slate-100 px-5 py-4 flex items-center gap-2 bg-slate-50/50">
             <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
-            <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Barang Terlaris</h3>
+            <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider">🏆 Produk Terlaris</h3>
         </div>
         <div class="p-5">
             @if ($barangTerlaris->isEmpty())
-                <p class="text-sm text-slate-400 text-center py-4">Belum ada data penjualan.</p>
+                <div class="text-center py-8">
+                    <p class="text-sm text-slate-400">Belum ada rekaman data penjualan terlaris.</p>
+                </div>
             @else
-            <div class="space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @php $maks = $barangTerlaris->max('total_terjual'); @endphp
                 @foreach ($barangTerlaris as $index => $item)
-                <div class="flex items-center gap-3">
-                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-700 text-xs font-bold flex items-center justify-center">
+                <div class="flex items-center gap-3.5 p-3 rounded-xl border border-slate-50 bg-slate-50/30 hover:bg-slate-50 hover:border-slate-100 transition duration-200">
+                    <span class="flex-shrink-0 w-7 h-7 rounded-xl font-bold flex items-center justify-center text-sm shadow-sm
+                        {{ $index == 0 ? 'bg-amber-100 text-amber-700 ring-2 ring-amber-200' : ($index == 1 ? 'bg-slate-200 text-slate-700' : ($index == 2 ? 'bg-orange-100 text-orange-700' : 'bg-slate-100 text-slate-500')) }}">
                         {{ $index + 1 }}
                     </span>
                     <div class="flex-1 min-w-0">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-sm font-medium text-slate-800 truncate">{{ $item->product->nama_produk ?? '—' }}</span>
-                            <span class="text-sm font-mono font-bold text-blue-600 ml-2 flex-shrink-0">{{ $item->total_terjual }}</span>
+                        <div class="flex justify-between items-center mb-1 gap-2">
+                            <span class="text-sm font-bold text-slate-700 truncate">{{ $item->product->nama_produk ?? '—' }}</span>
+                            <span class="text-sm font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">{{ $item->total_terjual }}x</span>
                         </div>
                         <div class="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                            <div class="h-full rounded-full bg-blue-500"
+                            <div class="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"
                                  style="width: {{ $maks > 0 ? ($item->total_terjual / $maks) * 100 : 0 }}%"></div>
                         </div>
                     </div>
@@ -170,36 +209,64 @@
         </div>
     </div>
 
-    {{-- LOG AKTIVITAS --}}
-    <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
-        <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-3.5 flex items-center gap-2">
-            <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
-            <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Log Aktivitas Terakhir</h3>
+    {{-- LOG AKTIVITAS (SCROLLABLE) --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[420px]">
+        <div class="border-b border-slate-100 px-5 py-4 flex items-center justify-between bg-slate-50/50 flex-shrink-0">
+            <div class="flex items-center gap-2">
+                <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider">Log Pergerakan Stok</h3>
+            </div>
+            <span class="text-xs font-semibold text-slate-400">Terbaru</span>
         </div>
-        <div class="divide-y divide-slate-100">
+        <div class="divide-y divide-slate-100/80 overflow-y-auto flex-1 scrollbar-thin">
             @forelse ($recentSales as $sale)
-            <div class="flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition">
-                <div class="min-w-0">
-                    <p class="text-sm font-semibold text-slate-900 truncate">{{ $sale->product->nama_produk ?? '—' }}</p>
-                    <p class="text-xs text-slate-400 font-mono">{{ $sale->created_at->format('d M Y, H:i') }}</p>
+            <div class="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50/70 transition-all duration-150">
+                <div class="min-w-0 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center font-bold flex-shrink-0 text-sm
+                        {{ $sale->tipe === 'otomatis' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600' }}">
+                        {{ $sale->tipe === 'otomatis' ? '🤖' : '✋' }}
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-sm font-bold text-slate-800 truncate">{{ $sale->product->nama_produk ?? '—' }}</p>
+                        <p class="text-xs font-medium text-slate-400 mt-0.5">{{ $sale->created_at->format('d M Y • H:i') }}</p>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2 ml-3 flex-shrink-0">
-                    <span class="text-sm font-mono font-bold text-red-500">-{{ $sale->jumlah }}</span>
-                    <span class="px-2 py-0.5 text-xs font-bold rounded-full
-                        {{ $sale->tipe === 'otomatis' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700' }}">
-                        {{ $sale->tipe === 'otomatis' ? '🤖 AI' : '✋ Manual' }}
+                <div class="flex items-center gap-3 ml-3 flex-shrink-0">
+                    <span class="text-sm font-mono font-extrabold text-rose-500 bg-rose-50/60 px-2 py-0.5 rounded-md border border-rose-100">-{{ $sale->jumlah }}</span>
+                    <span class="px-2.5 py-1 text-[11px] font-bold rounded-lg shadow-sm tracking-wide border
+                        {{ $sale->tipe === 'otomatis' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200' }}">
+                        {{ $sale->tipe === 'otomatis' ? 'DETEKSI YOLO' : 'MANUAL' }}
                     </span>
                 </div>
             </div>
             @empty
-            <div class="px-5 py-10 text-center text-sm text-slate-400">
-                Belum ada pergerakan stok terdeteksi.
+            <div class="px-5 py-12 text-center text-sm text-slate-400 my-auto">
+                <div class="text-2xl mb-2">📥</div>
+                <p class="font-medium text-slate-500">Belum ada aktivitas baru</p>
+                <p class="text-xs text-slate-400 mt-0.5">Semua data pergerakan stok akan tampil di sini.</p>
             </div>
             @endforelse
         </div>
     </div>
 
 </div>
+
+{{-- Kustomisasi Scrollbar Minimalis --}}
+<style>
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 20px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+    }
+</style>
 @endsection
 
 @push('scripts')
@@ -210,25 +277,17 @@
     function getDismissedAnnouncements() {
         try {
             const stored = JSON.parse(localStorage.getItem(announcementKey));
-            if (Array.isArray(stored)) {
-                return stored.map(Number).filter((value) => !Number.isNaN(value));
-            }
-            if (typeof stored === 'number') {
-                return [stored];
-            }
-            if (typeof stored === 'string' && stored.trim().length > 0) {
+            if (Array.isArray(stored)) return stored.map(Number).filter((value) => !Number.isNaN(value));
+            if (typeof stored === 'number') return [stored];
+            if (typeof stored === 'number' && typeof stored === 'string' && stored.trim().length > 0) {
                 const parsed = Number(stored);
                 return Number.isNaN(parsed) ? [] : [parsed];
             }
             return [];
-        } catch {
-            return [];
-        }
+        } catch { return []; }
     }
 
-    function isAnnouncementDismissed(id) {
-        return getDismissedAnnouncements().includes(Number(id));
-    }
+    function isAnnouncementDismissed(id) { return getDismissedAnnouncements().includes(Number(id)); }
 
     function dismissAnnouncement(id) {
         const dismissed = getDismissedAnnouncements();
@@ -239,15 +298,9 @@
         }
     }
 
-    function hideAnnouncementCard(id) {
-        document.getElementById(`announcementCard-${id}`)?.classList.add('hidden');
-    }
+    function hideAnnouncementCard(id) { document.getElementById(`announcementCard-${id}`)?.classList.add('hidden'); }
 
-    announcementIds.forEach(function (id) {
-        if (isAnnouncementDismissed(id)) {
-            hideAnnouncementCard(id);
-        }
-    });
+    announcementIds.forEach(function (id) { if (isAnnouncementDismissed(id)) { hideAnnouncementCard(id); } });
 
     document.querySelectorAll('.dismissAnnouncement').forEach(function (button) {
         button.addEventListener('click', function () {
@@ -258,27 +311,62 @@
         });
     });
 
-    new Chart(document.getElementById('grafikMingguan'), {
-        type: 'line',
-        data: {
-            labels: {!! json_encode($grafikMingguan->pluck('tanggal')->map(fn ($t) => \Carbon\Carbon::parse($t)->translatedFormat('d M'))) !!},
-            datasets: [{
-                label: 'Barang Keluar',
-                data: {!! json_encode($grafikMingguan->pluck('total')) !!},
-                borderColor: '#2563eb',
-                backgroundColor: 'rgba(37, 99, 235, 0.08)',
-                tension: 0.35,
-                fill: true,
-                pointRadius: 4,
-                pointBackgroundColor: '#2563eb',
-            }]
-        },
-        options: {
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
-                x: { grid: { display: false } },
-            }
+    // 💡 PENYELESAIAN ERROR DI SINI: Kode inisialisasi Chart dibungkus DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', function() {
+        const canvasElement = document.getElementById('grafikMingguan');
+        if (canvasElement) {
+            const ctx = canvasElement.getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+            gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
+            gradient.addColorStop(1, 'rgba(37, 99, 235, 0.00)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {!! json_encode($grafikMingguan->pluck('tanggal')->map(fn ($t) => \Carbon\Carbon::parse($t)->translatedFormat('d M'))) !!},
+                    datasets: [{
+                        label: 'Barang Keluar',
+                        data: {!! json_encode($grafikMingguan->pluck('total')) !!},
+                        borderColor: '#2563eb',
+                        borderWidth: 3,
+                        backgroundColor: gradient,
+                        tension: 0.38,
+                        fill: true,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#2563eb',
+                        pointHoverBackgroundColor: '#ffffff',
+                        pointHoverBorderColor: '#2563eb',
+                        pointHoverBorderWidth: 3,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            padding: 10,
+                            backgroundColor: '#0f172a',
+                            titleFont: { size: 12, weight: 'bold' },
+                            bodyFont: { size: 12 },
+                            cornerRadius: 8,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            grid: { color: '#f1f5f9', drawBorder: false },
+                            ticks: { color: '#94a3b8', font: { weight: 500 } }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { color: '#94a3b8', font: { weight: 500 } }
+                        },
+                    }
+                }
+            });
         }
     });
 </script>

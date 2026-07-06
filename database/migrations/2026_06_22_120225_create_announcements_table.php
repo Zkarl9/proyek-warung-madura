@@ -17,10 +17,20 @@ return new class extends Migration
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
+
+        Schema::create('announcement_dismissals', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('announcement_id')->constrained()->cascadeOnDelete();
+            $table->timestamps();
+
+            $table->unique(['user_id', 'announcement_id']);
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('announcement_dismissals');
         Schema::dropIfExists('announcements');
     }
 };

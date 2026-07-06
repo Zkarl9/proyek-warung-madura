@@ -1,133 +1,106 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard Admin')
-@section('page-title', 'Dashboard')
-@section('page-subtitle', 'Ringkasan sistem & status training AI')
+@section('page-title', 'Dashboard Admin')
+@section('page-subtitle', 'Monitoring sistem dan status training model AI')
 
 @section('content')
-<div class="space-y-4">
+<div class="space-y-6">
 
-    {{-- HEADER --}}
-    <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-4 md:p-6 text-white shadow-lg">
-        <h2 class="text-lg md:text-2xl font-bold">🛠️ Panel Admin</h2>
-        <p class="text-blue-100 text-sm mt-0.5">Ringkasan sistem & status training AI — {{ now()->format('d M Y') }}</p>
+    {{-- HEADER STATS --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        @php
+            $stats = [
+                ['label' => 'Total Produk', 'value' => $totalProduk, 'color' => 'text-slate-900', 'icon' => '📦'],
+                ['label' => 'Siap Deteksi', 'value' => $produkSiapDeteksi, 'color' => 'text-green-600', 'icon' => '🎯'],
+                ['label' => 'Akun Owner', 'value' => $totalOwner, 'color' => 'text-amber-500', 'icon' => '👤'],
+                ['label' => 'Deteksi Hari Ini', 'value' => $deteksiHariIni, 'color' => 'text-blue-600', 'icon' => '⚡'],
+            ];
+        @endphp
+
+        @foreach($stats as $s)
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $s['label'] }}</span>
+                <span class="text-lg">{{ $s['icon'] }}</span>
+            </div>
+            <p class="text-3xl font-black {{ $s['color'] }} font-mono">{{ $s['value'] }}</p>
+        </div>
+        @endforeach
     </div>
 
-    {{-- STATS GRID --}}
-    <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <div class="bg-white rounded-xl shadow border border-slate-200 p-4">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Produk</p>
-            <p class="text-3xl font-bold text-slate-900 mt-1">{{ $totalProduk }}</p>
-            <p class="text-xs text-slate-400 mt-1">produk terdaftar</p>
-        </div>
-        <div class="bg-white rounded-xl shadow border border-slate-200 p-4">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Siap Deteksi</p>
-            <p class="text-3xl font-bold text-green-600 mt-1">{{ $produkSiapDeteksi }}</p>
-            <p class="text-xs text-slate-400 mt-1">model terlatih</p>
-        </div>
-        <div class="bg-white rounded-xl shadow border border-slate-200 p-4">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Akun Owner</p>
-            <p class="text-3xl font-bold text-amber-500 mt-1">{{ $totalOwner }}</p>
-            <p class="text-xs text-slate-400 mt-1">pengguna aktif</p>
-        </div>
-        <div class="bg-white rounded-xl shadow border border-slate-200 p-4">
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Deteksi Hari Ini</p>
-            <p class="text-3xl font-bold text-blue-600 mt-1 font-mono">{{ $deteksiHariIni }}</p>
-            <p class="text-xs text-slate-400 mt-1">item terdeteksi</p>
-        </div>
-    </div>
+    {{-- MAIN CONTENT GRID --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-    {{-- CHART + DETAIL --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-        {{-- Donut Chart --}}
-        <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
-            <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-3.5 flex items-center gap-2">
-                <span class="h-2.5 w-2.5 rounded-full bg-blue-500"></span>
-                <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Status Training</h3>
-            </div>
-            <div class="p-5 flex justify-center items-center">
-                <div style="width:220px; height:220px;">
-                    <canvas id="statusAiChart"></canvas>
-                </div>
+        {{-- CHART SECTION --}}
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <h3 class="text-xs font-black text-slate-700 uppercase tracking-widest mb-6">Distribusi Training AI</h3>
+            <div class="relative h-64 flex justify-center items-center">
+                <canvas id="statusAiChart"></canvas>
             </div>
         </div>
 
-        {{-- Rincian Status --}}
-        <div class="lg:col-span-2 bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
-            <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-3.5 flex items-center gap-2">
-                <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
-                <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Rincian Status Model</h3>
+        {{-- LIST STATUS --}}
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-50 flex items-center justify-between">
+                <h3 class="text-xs font-black text-slate-700 uppercase tracking-widest">Rincian Status Model</h3>
+                <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">Real-time</span>
             </div>
-            <div class="p-5 space-y-3">
+            
+            <div class="p-6 space-y-4">
                 @php
                     $statusList = [
-                        'belum_dilatih'   => ['label' => 'Belum Dilatih',    'color' => 'bg-red-100 text-red-700',   'dot' => 'bg-red-500'],
-                        'proses_training' => ['label' => 'Proses Training',  'color' => 'bg-amber-100 text-amber-700','dot' => 'bg-amber-500'],
-                        'siap_deteksi'    => ['label' => 'Siap Deteksi',     'color' => 'bg-green-100 text-green-700','dot' => 'bg-green-500'],
+                        'belum_dilatih'   => ['label' => 'Belum Dilatih',   'color' => 'bg-red-500',   'text' => 'text-red-700'],
+                        'proses_training' => ['label' => 'Proses Training', 'color' => 'bg-amber-500', 'text' => 'text-amber-700'],
+                        'siap_deteksi'    => ['label' => 'Siap Deteksi',    'color' => 'bg-green-500', 'text' => 'text-green-700'],
                     ];
                 @endphp
+
                 @foreach ($statusList as $key => $s)
-                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <div class="group flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:bg-white hover:border-slate-200 border border-transparent transition-all">
                     <div class="flex items-center gap-3">
-                        <span class="h-3 w-3 rounded-full flex-shrink-0 {{ $s['dot'] }}"></span>
-                        <span class="text-sm font-semibold text-slate-700">{{ $s['label'] }}</span>
+                        <span class="h-2.5 w-2.5 rounded-full {{ $s['color'] }}"></span>
+                        <span class="text-sm font-bold text-slate-700">{{ $s['label'] }}</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xl font-bold font-mono text-slate-900">{{ $statusAi[$key] ?? 0 }}</span>
-                        <span class="px-2 py-0.5 text-xs font-bold rounded-full {{ $s['color'] }}">produk</span>
-                    </div>
+                    <span class="text-lg font-black text-slate-900">{{ $statusAi[$key] ?? 0 }}</span>
                 </div>
                 @endforeach
 
-                {{-- Progress bar --}}
-                @php 
-                    // PERBAIKAN: Menggunakan method sum() dari Laravel Collection jika variabel tersedia
-                    $total = isset($statusAi) ? $statusAi->sum() : 0; 
-                @endphp
-                
+                {{-- Progress Bar yang lebih estetis --}}
+                @php $total = ($statusAi['belum_dilatih'] ?? 0) + ($statusAi['proses_training'] ?? 0) + ($statusAi['siap_deteksi'] ?? 0); @endphp
                 @if ($total > 0)
-                <div class="mt-2">
-                    <div class="flex rounded-full overflow-hidden h-2.5">
-                        <div class="bg-red-400 transition-all" style="width:{{ (($statusAi['belum_dilatih'] ?? 0) / $total) * 100 }}%"></div>
-                        <div class="bg-amber-400 transition-all" style="width:{{ (($statusAi['proses_training'] ?? 0) / $total) * 100 }}%"></div>
-                        <div class="bg-green-500 transition-all" style="width:{{ (($statusAi['siap_deteksi'] ?? 0) / $total) * 100 }}%"></div>
+                <div class="pt-4">
+                    <div class="flex w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="bg-red-500" style="width:{{ (($statusAi['belum_dilatih'] ?? 0) / $total) * 100 }}%"></div>
+                        <div class="bg-amber-500" style="width:{{ (($statusAi['proses_training'] ?? 0) / $total) * 100 }}%"></div>
+                        <div class="bg-green-500" style="width:{{ (($statusAi['siap_deteksi'] ?? 0) / $total) * 100 }}%"></div>
                     </div>
-                    <p class="text-xs text-slate-400 mt-1.5 text-right">Total {{ $total }} produk</p>
                 </div>
                 @endif
             </div>
         </div>
     </div>
-
 </div>
 @endsection
 
 @push('scripts')
 <script>
-    new Chart(document.getElementById('statusAiChart'), {
+    const ctx = document.getElementById('statusAiChart').getContext('2d');
+    new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: ['Belum Dilatih', 'Proses Training', 'Siap Deteksi'],
             datasets: [{
-                data: [
-                    {{ $statusAi['belum_dilatih'] ?? 0 }},
-                    {{ $statusAi['proses_training'] ?? 0 }},
-                    {{ $statusAi['siap_deteksi'] ?? 0 }},
-                ],
-                backgroundColor: ['#f87171', '#fbbf24', '#22c55e'],
+                data: [{{ $statusAi['belum_dilatih'] ?? 0 }}, {{ $statusAi['proses_training'] ?? 0 }}, {{ $statusAi['siap_deteksi'] ?? 0 }}],
+                backgroundColor: ['#ef4444', '#f59e0b', '#22c55e'],
                 borderWidth: 0,
+                hoverOffset: 4
             }]
         },
         options: {
-            cutout: '72%',
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { boxWidth: 10, padding: 16, font: { size: 12 } }
-                }
-            }
+            cutout: '75%',
+            plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }
         }
     });
 </script>
-@endpush
+@endphp

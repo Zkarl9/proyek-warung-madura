@@ -29,7 +29,12 @@ class DashboardController extends Controller
             ->orderBy('tanggal')
             ->get();
 
-        $pengumuman = Announcement::latest()->limit(5)->get();
+        $pengumuman = Announcement::whereDoesntHave('dismissedBy', function ($q) {
+                $q->where('user_id', auth()->id());
+            })
+            ->latest()
+            ->limit(5)
+            ->get();
 
         return view('owner.dashboard', compact(
             'stokTipis', 'totalProduk', 'itemTerjualHariIni', 'recentSales', 'barangTerlaris', 'grafikMingguan', 'pengumuman'

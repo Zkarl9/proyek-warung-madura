@@ -18,4 +18,9 @@ class Announcement extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function dismissedBy()
+    {
+        return $this->belongsToMany(User::class, 'announcement_dismissals')->withTimestamps();
+    }
 }
