@@ -18,6 +18,19 @@
             70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
         }
+        /* Ensure input text is visible in dark theme and when browser autofills */
+        input, textarea {
+            caret-color: #f8fafc;
+        }
+        input::placeholder, textarea::placeholder {
+            color: rgba(148,163,184,0.7);
+        }
+        input:-webkit-autofill,
+        textarea:-webkit-autofill,
+        select:-webkit-autofill {
+            -webkit-text-fill-color: #f8fafc !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
