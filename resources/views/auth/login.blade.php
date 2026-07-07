@@ -18,9 +18,9 @@
             70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
         }
-        /* Ensure input text is visible in dark theme and when browser autofills */
+        /* Ensure input text is visible and autofill uses readable color */
         input, textarea {
-            caret-color: #f8fafc;
+            caret-color: #0f172a; /* dark caret for white inputs */
         }
         input::placeholder, textarea::placeholder {
             color: rgba(148,163,184,0.7);
@@ -28,7 +28,7 @@
         input:-webkit-autofill,
         textarea:-webkit-autofill,
         select:-webkit-autofill {
-            -webkit-text-fill-color: #f8fafc !important;
+            -webkit-text-fill-color: #0f172a !important; /* dark autofill text */
             transition: background-color 5000s ease-in-out 0s;
         }
     </style>
@@ -84,7 +84,7 @@
                                 value="{{ old('email') }}"
                                 required
                                 autofocus
-                                class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 py-3 pl-11 pr-4 text-slate-100 outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-blue-400 focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10"
+                                class="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-500/10 caret-slate-900"
                                 placeholder="admin@stockvision.test"
                             >
                         </div>
@@ -104,7 +104,7 @@
                                 id="password"
                                 name="password"
                                 required
-                                class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 py-3 pl-11 pr-4 text-slate-100 outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-blue-400 focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10"
+                                class="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-500/10 caret-slate-900"
                                 placeholder="••••••••"
                             >
                         </div>
