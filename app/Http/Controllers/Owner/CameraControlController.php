@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 class CameraControlController extends Controller
 {
     // IP Raspberry Pi — sesuaikan dengan jaringan kamu
-    protected string $raspiUrl = 'http://192.168.0.193:5000';
+    protected string $raspiUrl = 'http://10.159.169.168:5000';
 
     public function start()
     {
