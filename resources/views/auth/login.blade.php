@@ -20,14 +20,14 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-slate-950 text-slate-900 antialiased">
+<body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
     <div class="relative min-h-screen overflow-hidden">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.22),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(16,185,129,0.20),_transparent_30%)]"></div>
         <div class="absolute top-10 left-10 h-40 w-40 rounded-full bg-blue-500/15 blur-3xl"></div>
         <div class="absolute bottom-10 right-10 h-52 w-52 rounded-full bg-emerald-500/15 blur-3xl"></div>
 
         <div class="relative flex min-h-screen items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-            <div class="w-full max-w-md rounded-[28px] border border-white/70 bg-white/90 p-8 shadow-[0_25px_80px_rgba(15,23,42,0.25)] backdrop-blur-xl sm:p-10">
+            <div class="w-full max-w-md rounded-[28px] border border-slate-800/80 bg-slate-900/95 p-8 shadow-[0_25px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-10">
                 <div class="mb-8 text-center">
                     <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 shadow-lg shadow-blue-500/20">
                         <svg class="h-10 w-10 text-white" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -39,8 +39,8 @@
                             <path d="M44 28H48" stroke="white" stroke-width="4" stroke-linecap="round"/>
                         </svg>
                     </div>
-                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Masuk ke StockVision</h2>
-                    <p class="mt-2 text-sm text-slate-500">Kelola stok warung dengan dashboard yang cepat, aman, dan modern.</p>
+                    <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Masuk ke StockVision</h2>
+                    <p class="mt-2 text-sm text-slate-300">Kelola stok warung dengan dashboard yang cepat, aman, dan modern.</p>
                 </div>
 
                 @if ($errors->any())
@@ -63,7 +63,7 @@
                     <div>
                         <label for="email" class="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-700">Alamat Email</label>
                         <div class="group relative">
-                            <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400 transition-colors duration-200 group-focus-within:text-blue-600"></i>
+                            <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400 transition-colors duration-200 group-focus-within:text-blue-400"></i>
                             <input
                                 type="email"
                                 id="email"
@@ -71,7 +71,7 @@
                                 value="{{ old('email') }}"
                                 required
                                 autofocus
-                                class="w-full rounded-2xl border border-slate-200 bg-slate-50/70 py-3 pl-11 pr-4 text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                                class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 py-3 pl-11 pr-4 text-slate-100 outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-blue-400 focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10"
                                 placeholder="admin@stockvision.test"
                             >
                         </div>
@@ -79,19 +79,19 @@
 
                     <div>
                         <div class="mb-2 flex items-center justify-between">
-                            <label for="password" class="block text-xs font-semibold uppercase tracking-[0.2em] text-slate-700">Kata Sandi</label>
+                            <label for="password" class="block text-xs font-semibold uppercase tracking-[0.2em] text-slate-300">Kata Sandi</label>
                             @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}" class="text-xs font-medium text-blue-600 hover:underline">Lupa sandi?</a>
+                                <a href="{{ route('password.request') }}" class="text-xs font-medium text-blue-400 hover:underline">Lupa sandi?</a>
                             @endif
                         </div>
                         <div class="group relative">
-                            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400 transition-colors duration-200 group-focus-within:text-blue-600"></i>
+                            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400 transition-colors duration-200 group-focus-within:text-blue-400"></i>
                             <input
                                 type="password"
                                 id="password"
                                 name="password"
                                 required
-                                class="w-full rounded-2xl border border-slate-200 bg-slate-50/70 py-3 pl-11 pr-4 text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+                                class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 py-3 pl-11 pr-4 text-slate-100 outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-blue-400 focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10"
                                 placeholder="••••••••"
                             >
                         </div>
@@ -103,9 +103,9 @@
                                 type="checkbox"
                                 id="remember"
                                 name="remember"
-                                class="h-4 w-4 rounded-md border-slate-300 text-blue-600 transition focus:ring-blue-500/20"
+                                class="h-4 w-4 rounded-md border-slate-600 bg-slate-900 text-blue-500 transition focus:ring-blue-400/20"
                             >
-                            <span class="text-sm font-medium text-slate-600">Ingat saya di perangkat ini</span>
+                            <span class="text-sm font-medium text-slate-300">Ingat saya di perangkat ini</span>
                         </label>
                     </div>
 
@@ -116,10 +116,6 @@
                         Masuk ke Dashboard
                     </button>
                 </form>
-
-                <div class="mt-6 rounded-2xl border border-slate-200/70 bg-slate-50/70 px-4 py-3 text-center text-sm text-slate-500">
-                    Akses aman untuk admin dan owner.
-                </div>
             </div>
         </div>
     </div>
