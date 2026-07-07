@@ -120,21 +120,23 @@
                 </div>
 
                 {{-- Indikator Status Kamera IoT Terintegrasi --}}
-                @php $kameraAktif = \App\Support\RaspiStatus::isOnline(); @endphp
-                <div class="inline-flex items-center gap-2.5 px-3 py-1.5 bg-white border border-slate-100 rounded-xl shadow-sm flex-shrink-0">
-                    <span class="relative flex h-2 w-2">
-                        @if ($kameraAktif)
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                        @else
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-400"></span>
-                        @endif
-                    </span>
-                    <span class="hidden sm:inline font-bold text-xs tracking-wide
-                        {{ $kameraAktif ? 'text-emerald-600' : 'text-rose-500' }}">
-                        {{ $kameraAktif ? 'YOLO ONLINE' : 'YOLO OFFLINE' }}
-                    </span>
-                </div>
+                @unless(request()->routeIs('owner.camera.live'))
+                    @php $kameraAktif = \App\Support\RaspiStatus::isOnline(); @endphp
+                    <div class="inline-flex items-center gap-2.5 px-3 py-1.5 bg-white border border-slate-100 rounded-xl shadow-sm flex-shrink-0">
+                        <span class="relative flex h-2 w-2">
+                            @if ($kameraAktif)
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            @else
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-400"></span>
+                            @endif
+                        </span>
+                        <span class="hidden sm:inline font-bold text-xs tracking-wide
+                            {{ $kameraAktif ? 'text-emerald-600' : 'text-rose-500' }}">
+                            {{ $kameraAktif ? 'RASPI ONLINE' : 'RASPI OFFLINE' }}
+                        </span>
+                    </div>
+                @endunless
             </div>
         </header>
 

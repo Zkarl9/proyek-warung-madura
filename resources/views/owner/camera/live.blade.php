@@ -8,30 +8,6 @@
 <div class="max-w-7xl mx-auto space-y-6 animate-fade-in">
 
     {{-- ══════════════════════════════════════════════════ --}}
-    {{-- NOTIFIKASI SYSTEM --}}
-    {{-- ══════════════════════════════════════════════════ --}}
-    @if(session('status'))
-    <div class="flex items-center gap-3 px-4 py-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-sm font-semibold shadow-sm animate-fadeIn">
-        <div class="p-1 bg-emerald-500 rounded-lg text-white">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-            </svg>
-        </div>
-        {{ session('status') }}
-    </div>
-    @endif
-    @if(session('error'))
-    <div class="flex items-center gap-3 px-4 py-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-sm font-semibold shadow-sm animate-fadeIn">
-        <div class="p-1 bg-rose-500 rounded-lg text-white">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-        </div>
-        {{ session('error') }}
-    </div>
-    @endif
-
-    {{-- ══════════════════════════════════════════════════ --}}
     {{-- HEADER CONSOLE --}}
     {{-- ══════════════════════════════════════════════════ --}}
     <div class="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
@@ -39,7 +15,7 @@
         <div class="relative flex items-center justify-between gap-4">
             <div>
                 <h2 class="text-xl md:text-2xl font-black tracking-tight flex items-center gap-2">
-                    <span>📷</span> Modul Kamera Live Vision
+                    <span>📷</span> Modul Kamera Live
                 </h2>
                 <p class="text-blue-200/80 text-xs md:text-sm font-medium mt-1">Stasiun Perangkat: Raspberry Pi 5 — Camera Module V3</p>
             </div>
@@ -97,7 +73,7 @@
                         <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> STREAMING REC
                     </span>
                     
-                    <img src="http://192.168.0.193:5000/stream.mjpg"
+                    <img src="http://10.159.169.168:5000/stream.mjpg"
                          alt="Stream kamera deteksi"
                          class="w-full h-full object-contain bg-slate-950"
                          onerror="this.style.display='none'; document.getElementById('stream-error').style.setProperty('display', 'flex', 'important');">
@@ -240,7 +216,7 @@
 @push('scripts')
 <script>
 (function () {
-    const FLASK_BASE_URL       = 'http://192.168.0.193:5000';
+    const FLASK_BASE_URL       = 'http://10.159.169.168:5000';
     const FLASK_DETECTIONS_URL = `${FLASK_BASE_URL}/detections`;
     const FLASK_CAPTURE_URL    = `${FLASK_BASE_URL}/capture-dataset`;
     const FLASK_DATASET_STATUS_URL = `${FLASK_BASE_URL}/dataset-status`;
