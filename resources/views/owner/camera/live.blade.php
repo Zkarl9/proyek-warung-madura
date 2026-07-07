@@ -205,7 +205,7 @@
             </div>
             <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200/60">
                 <span class="text-xs font-bold text-slate-600 uppercase tracking-wider">Kapasitas Stok Menipis</span>
-                <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-black rounded-lg shadow-sm">⚠ Stok Menipis</span>
+                <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-black rounded-lg shadow-sm">⚠ Menipis</span>
             </div>
         </div>
     </div>
