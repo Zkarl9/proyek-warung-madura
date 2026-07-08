@@ -8,13 +8,13 @@
 <div class="max-w-3xl mx-auto space-y-6 py-6">
 
     {{-- HEADER KONSOL --}}
-    <div class="relative overflow-hidden rounded-[28px] border border-slate-200/80 bg-slate-950/95 p-6 shadow-[0_25px_80px_rgba(15,23,42,0.18)] sm:p-8">
+    <div class="relative overflow-hidden rounded-[28px] bg-gradient-to-r from-sky-600 via-indigo-600 to-slate-900 p-6 text-white shadow-[0_25px_80px_rgba(15,23,42,0.18)] sm:p-8">
         <div class="relative z-10 space-y-4">
             <div>
                 <h2 class="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">⚙️ Pengaturan Sistem</h2>
-                <p class="mt-2 text-sm text-slate-300 sm:text-base">Sistem otomasi notifikasi dan ambang batas stok untuk warung Anda.</p>
+                <p class="mt-2 text-sm text-slate-200 sm:text-base">Sistem otomasi notifikasi dan ambang batas stok untuk warung Anda.</p>
             </div>
-            <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/90 ring-1 ring-white/10 backdrop-blur">
+            <div class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/90 ring-1 ring-white/10 backdrop-blur-sm">
                 <span class="relative flex h-2.5 w-2.5">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-70"></span>
                     <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
