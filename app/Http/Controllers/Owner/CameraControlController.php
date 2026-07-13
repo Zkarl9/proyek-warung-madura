@@ -7,9 +7,13 @@ use Illuminate\Support\Facades\Http;
 
 class CameraControlController extends Controller
 {
-    // IP Raspberry Pi — sesuaikan dengan jaringan kamu
-    protected string $raspiUrl = 'http://10.159.169.168:5000';
+    // Base URL Raspberry Pi — diambil dari .env via config/services.php
+    protected string $raspiUrl;
 
+    public function __construct()
+    {
+        $this->raspiUrl = config('services.raspi.base_url');
+    }
     public function start()
     {
         try {

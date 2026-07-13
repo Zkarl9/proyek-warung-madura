@@ -36,7 +36,7 @@ return [
     ],
 
    'raspi' => [
-    'base_url'   => env('RASPI_BASE_URL', 'http://10.159.169.168:5000'),
+    'base_url'   => env('RASPI_BASE_URL', 'http://localhost:5000'),
     'api_key'    => env('RASPI_API_KEY'),
     'stream_url' => env('RASPI_STREAM_URL', 'https://vps-kamu.id/stream'),
 ],

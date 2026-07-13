@@ -73,7 +73,7 @@
                         <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> STREAMING REC
                     </span>
                     
-                    <img src="http://10.159.169.168:5000/stream.mjpg"
+                    <img src="{{ config('services.raspi.stream_url') }}/stream.mjpg"
                          alt="Stream kamera deteksi"
                          class="w-full h-full object-contain bg-slate-950"
                          onerror="this.style.display='none'; document.getElementById('stream-error').style.setProperty('display', 'flex', 'important');">
@@ -216,7 +216,7 @@
 @push('scripts')
 <script>
 (function () {
-    const FLASK_BASE_URL       = 'http://10.159.169.168:5000';
+    const FLASK_BASE_URL       = '{{ config('services.raspi.stream_url') }}';
     const FLASK_DETECTIONS_URL = `${FLASK_BASE_URL}/detections`;
     const FLASK_CAPTURE_URL    = `${FLASK_BASE_URL}/capture-dataset`;
     const FLASK_DATASET_STATUS_URL = `${FLASK_BASE_URL}/dataset-status`;
