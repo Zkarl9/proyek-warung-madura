@@ -27,3 +27,12 @@ Route::post('/ai/stock-update', [AiStockController::class, 'update'])->name('api
 Route::post('/dataset/upload', [DatasetUploadController::class, 'upload'])->name('api.dataset.upload');
 Route::post('/dataset/upload-massal', [DatasetUploadController::class, 'upload'])->name('api.dataset.upload-massal');
 Route::post('/dataset/upload-single', [DatasetUploadController::class, 'uploadSingleImage'])->name('api.dataset.upload-single');
+// Endpoint untuk Raspberry Pi mengambil data batas minimum stok dari Web
+Route::get('/products/minimum-settings', function () {
+    // Mengambil id, nama produk (label YOLO), dan stok minimum
+    $products = \App\Models\Product::select('id', 'yolo_label as name', 'stok_minimum')->get();
+    return response()->json([
+        'ok' => true,
+        'data' => $products
+    ]);
+});

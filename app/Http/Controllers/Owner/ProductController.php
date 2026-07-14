@@ -102,43 +102,11 @@ class ProductController extends Controller
             'status_ai' => 'proses_training',
         ]);
 
-        Notification::send(
-            User::where('role', 'admin')->get(),
-            new PermintaanDeteksiProduk($product)
+        \Illuminate\Support\Facades\Notification::send(
+            \App\Models\User::where('role', 'admin')->get(),
+            new \App\Notifications\PermintaanDeteksiProduk($product)
         );
 
         return back()->with('status', 'Permintaan deteksi telah dikirim ke admin. Silakan tunggu pengumuman selanjutnya.');
-    }
-
-    public function ambilFoto(Request $request, Product $product)
-    {
-        $raspiUrl = config('services.raspi.base_url') . '/capture/' . $product->yolo_label;
-
-        try {
-            $response = Http::timeout(10)->asForm()->post($raspiUrl, [
-                'product_id' => $product->id,
-            ]);
-
-            $message = $response->successful()
-                ? 'Raspi mulai mengambil 50 foto untuk training di background. Prosesnya butuh sekitar 15–30 detik, cek lagi nanti.'
-                : 'Raspi merespons tapi gagal memulai proses (HTTP ' . $response->status() . ').';
-
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'status' => $response->successful() ? 'ok' : 'error',
-                    'message' => $message,
-                ], $response->successful() ? 200 : 422);
-            }
-
-            return back()->with($response->successful() ? 'status' : 'error', $message);
-        } catch (\Illuminate\Http\Client\ConnectionException $e) {
-            $message = 'Gagal menghubungi Raspberry Pi. Pastikan Raspi menyala dan satu jaringan.';
-
-            if ($request->wantsJson()) {
-                return response()->json(['status' => 'error', 'message' => $message], 422);
-            }
-
-            return back()->with('error', $message);
-        }
     }
 }

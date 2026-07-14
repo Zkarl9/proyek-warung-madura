@@ -51,7 +51,6 @@ Route::middleware(['auth', 'owner'])->prefix('owner')->name('owner.')->group(fun
 
     Route::resource('/products', ProductController::class);
     Route::post('/products/{product}/minta-deteksi', [ProductController::class, 'mintaDeteksi'])->name('products.mintaDeteksi');
-    Route::post('/products/{product}/ambil-foto', [ProductController::class, 'ambilFoto'])->name('products.ambilFoto');
 
     Route::resource('/stock-in', StockInController::class)->only(['index', 'create', 'store']);
     Route::get('/stock-out', [StockOutController::class, 'index'])->name('stock-out.index');

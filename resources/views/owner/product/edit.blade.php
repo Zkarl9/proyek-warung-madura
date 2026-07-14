@@ -205,12 +205,6 @@
                     <p class="text-xs text-red-500 mt-1.5">⚠ {{ $message }}</p>
                 @enderror
 
-                {{-- Trigger Button Kamera Pi --}}
-                <button type="button" id="btnAmbilFoto"
-                        data-url="{{ route('owner.products.ambilFoto', $product) }}"
-                        class="w-full flex items-center justify-center gap-2 py-2.5 border-2 border-blue-200 text-blue-700 font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-blue-50/80 hover:border-blue-300 transition active:scale-95 shadow-sm">
-                    📷 Ambil Foto dari Kamera IoT
-                </button>
 
                 {{-- INFO ACTION FORM SEBELUMNYA DI SINI DIHAPUS & DI-PINDAH KE FORM TERPISAH DI BAWAH --}}
                 @if ($product->status_ai === 'proses_training')

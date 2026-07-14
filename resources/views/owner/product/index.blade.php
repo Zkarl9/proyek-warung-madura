@@ -185,12 +185,6 @@
                             <span class="text-[11px] font-bold text-amber-700 flex items-center gap-1 bg-amber-50 border border-amber-300 px-2 py-1 rounded-lg">⌛ Training...</span>
                         @endif
                         
-                        <form action="{{ route('owner.products.ambilFoto', $produk) }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit" class="text-xs font-bold text-blue-700 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 border border-blue-300 px-2.5 py-1 rounded-lg transition duration-150 active:scale-95">
-                                📷 Dataset
-                            </button>
-                        </form>
                     </div>
                 </div>
 

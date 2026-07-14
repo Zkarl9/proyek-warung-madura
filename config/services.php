@@ -39,6 +39,7 @@ return [
     'base_url'   => env('RASPI_BASE_URL', 'http://localhost:5000'),
     'api_key'    => env('RASPI_API_KEY'),
     'stream_url' => env('RASPI_STREAM_URL', 'https://vps-kamu.id/stream'),
+    'flicker_grace_seconds' => env('RASPI_FLICKER_GRACE_SECONDS', 5),
 ],
 
     'telegram' => [
