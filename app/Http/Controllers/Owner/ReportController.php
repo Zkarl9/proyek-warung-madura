@@ -51,13 +51,13 @@ class ReportController extends Controller
         $stockIn = StockIn::with('product')
             ->whereBetween('created_at', [$dariTanggal->copy()->startOfDay(), $sampaiTanggal->copy()->endOfDay()])
             ->when($productId, fn ($q) => $q->where('product_id', $productId))
-            ->orderBy('created_at')
+            ->orderByDesc('created_at')
             ->get();
 
         $stockOut = StockOut::with('product')
             ->whereBetween('created_at', [$dariTanggal->copy()->startOfDay(), $sampaiTanggal->copy()->endOfDay()])
             ->when($productId, fn ($q) => $q->where('product_id', $productId))
-            ->orderBy('created_at')
+            ->orderByDesc('created_at')
             ->get();
 
         // ===== Net Perubahan Stok =====

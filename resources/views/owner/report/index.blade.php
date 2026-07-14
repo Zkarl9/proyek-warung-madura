@@ -96,7 +96,7 @@
     {{-- ══════════════════════════════════════════════════ --}}
     {{-- RINGKASAN METRIKS UTAMA --}}
     {{-- ══════════════════════════════════════════════════ --}}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 p-5 flex items-center gap-4 transition duration-200 hover:border-emerald-400">
             <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center text-xl shadow-inner">📥</div>
             <div class="min-w-0">
@@ -113,44 +113,6 @@
                 <p class="text-[10px] font-bold text-slate-400 mt-0.5 font-mono">{{ $stockOut->count() }} Transaksi</p>
             </div>
         </div>
-        <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 p-5 flex items-center gap-4 transition duration-200 hover:border-blue-400">
-            <div class="flex-shrink-0 w-12 h-12 rounded-xl {{ $netStok >= 0 ? 'bg-blue-50 border-blue-100 text-blue-600' : 'bg-amber-50 border-amber-100 text-amber-600' }} flex items-center justify-center text-xl shadow-inner">
-                {{ $netStok >= 0 ? '📈' : '📉' }}
-            </div>
-            <div class="min-w-0">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Net Deviasi Stok</p>
-                <p class="text-2xl font-black {{ $netStok >= 0 ? 'text-blue-600' : 'text-amber-600' }} font-mono tracking-tight mt-0.5">
-                    {{ $netStok >= 0 ? '+' : '' }}{{ $netStok }}
-                </p>
-                <p class="text-[10px] font-bold text-slate-400 mt-0.5">Selisih Delta Bersih</p>
-            </div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 p-5 flex items-center gap-4 transition duration-200 hover:border-violet-400">
-            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-violet-50 border border-violet-100 text-violet-600 flex items-center justify-center text-xl shadow-inner">🤖</div>
-            <div class="min-w-0">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Otomatisasi AI</p>
-                <p class="text-2xl font-black text-violet-600 font-mono tracking-tight mt-0.5">{{ $persenOtomatis }}%</p>
-                <p class="text-[10px] font-bold text-slate-400 mt-0.5 font-mono">{{ $persenManual }}% Entri Manual</p>
-            </div>
-        </div>
-    </div>
-
-    {{-- ══════════════════════════════════════════════════ --}}
-    {{-- GRAFIK KELUAR OTOMATIS VS MANUAL --}}
-    {{-- ══════════════════════════════════════════════════ --}}
-    <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 p-5">
-        <div class="flex items-center justify-between mb-2.5">
-            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Rasio Metode Distribusi: Sinyal AI vs Input Manual</h3>
-            <span class="text-xs font-bold font-mono px-2 py-0.5 bg-slate-100 text-slate-600 rounded-lg">{{ $totalKeluar }} Unit Agregat</span>
-        </div>
-        <div class="flex rounded-full overflow-hidden h-3 bg-slate-100 p-0.5 ring-1 ring-slate-200/60">
-            <div class="bg-gradient-to-r from-violet-500 to-indigo-600 rounded-full" style="width: {{ $persenOtomatis }}%"></div>
-            <div class="bg-gradient-to-r from-amber-400 to-orange-500 rounded-full" style="width: {{ $persenManual }}%"></div>
-        </div>
-        <div class="flex flex-wrap items-center gap-4 mt-3 text-[11px] font-bold text-slate-500">
-            <span class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span> Otomatis Kognitif (Visi AI) — {{ $persenOtomatis }}%</span>
-            <span class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span> Prosedural Manual — {{ $persenManual }}%</span>
-        </div>
     </div>
 
     {{-- ══════════════════════════════════════════════════ --}}
@@ -162,7 +124,7 @@
         <div class="lg:col-span-2 bg-white rounded-2xl shadow-md border-2 border-slate-200/80 overflow-hidden">
             <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-4 flex items-center gap-2">
                 <span class="h-2.5 w-2.5 rounded-full bg-blue-500"></span>
-                <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Grafik Fluktuasi Mutasi Stok Harian</h3>
+                <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Grafik Mutasi Stok Harian</h3>
             </div>
             <div class="p-5">
                 <canvas id="grafikTrenLaporan" height="135"></canvas>
@@ -173,7 +135,7 @@
         <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 overflow-hidden">
             <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-4 flex items-center gap-2">
                 <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
-                <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Produk Densitas Pengeluaran Tertinggi</h3>
+                <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Produk Paling Sering Keluar</h3>
             </div>
             <div class="p-5 h-full max-h-[350px] overflow-y-auto scrollbar-thin">
                 @if ($produkTerlaris->isEmpty())
@@ -212,7 +174,7 @@
         <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 overflow-hidden flex flex-col">
             <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-4 flex items-center gap-2 flex-shrink-0">
                 <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-                <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Log Rincian Pasokan Masuk</h3>
+                <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Log Rincian Pemasukan Barang</h3>
                 <span class="ml-auto px-2.5 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-bold font-mono rounded-lg">{{ $stockIn->count() }} Baris</span>
             </div>
 
