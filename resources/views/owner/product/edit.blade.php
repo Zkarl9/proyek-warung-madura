@@ -1,9 +1,9 @@
 @extends('layouts.app')
-
+ 
 @section('title', 'Ubah Produk')
 @section('page-title', 'Ubah Produk')
 @section('page-subtitle', $product->nama_produk)
-
+ 
 @section('content')
 @php
     $statusLabel = [
@@ -12,7 +12,7 @@
         'proses_training' => 'Proses Training',
         'siap_deteksi'    => 'Siap Deteksi',
     ][$product->status_ai] ?? 'Status Tidak Diketahui';
-
+ 
     $statusBadge = [
         'belum_siap'      => 'bg-slate-100 text-slate-600 border border-slate-200',
         'belum_dilatih'   => 'bg-rose-50 text-rose-700 border border-rose-200',
@@ -20,9 +20,9 @@
         'siap_deteksi'    => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
     ][$product->status_ai] ?? 'bg-slate-100 text-slate-600';
 @endphp
-
+ 
 <div class="max-w-4xl mx-auto space-y-6 animate-fade-in">
-
+ 
     {{-- ══════════════════════════════════════════════════ --}}
     {{-- HEADER --}}
     {{-- ══════════════════════════════════════════════════ --}}
@@ -46,7 +46,7 @@
             </div>
         </div>
     </div>
-
+ 
     {{-- ══════════════════════════════════════════════════ --}}
     {{-- MAIN FORM --}}
     {{-- ══════════════════════════════════════════════════ --}}
@@ -54,7 +54,7 @@
           enctype="multipart/form-data" class="space-y-6">
         @csrf
         @method('PUT')
-
+ 
         {{-- Informasi Dasar --}}
         <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 overflow-hidden">
             <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-4 flex items-center gap-2">
@@ -72,7 +72,7 @@
                         <p class="text-xs text-red-500 mt-1.5">⚠ {{ $message }}</p>
                     @enderror
                 </div>
-
+ 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="kategori" class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Kategori</label>
@@ -93,7 +93,7 @@
                 </div>
             </div>
         </div>
-
+ 
         {{-- YOLO Label --}}
         <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 overflow-hidden">
             <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-4 flex items-center gap-2">
@@ -108,7 +108,7 @@
                     <p class="text-xs text-violet-500/90 mb-3 font-medium">
                         Ubah label hanya jika model belum di-training ulang dengan nama dataset baru.
                     </p>
-
+ 
                     <div id="detectionPreview"
                          class="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg text-xs font-bold transition-all duration-300 border
                                 {{ $product->yolo_label ? 'bg-violet-100/70 text-violet-800 border-violet-300' : 'bg-slate-100 text-slate-500 border-slate-300' }}">
@@ -117,8 +117,8 @@
                             {{ $product->yolo_label ? 'Produk terikat kamera: ' . $product->yolo_label : 'Label kosong — produk tidak akan terdeteksi visual' }}
                         </span>
                     </div>
-
-                    <input type="text" id="yolo_label" name="yolo_label" value="{{ $product->yolo_label }}" required
+ 
+                    <input type="text" id="yolo_label" name="yolo_label" value="{{ $product->yolo_label }}"
                            placeholder="contoh: aqua_600ml, indomie_goreng"
                            class="w-full px-4 py-2.5 border border-violet-300 rounded-xl bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/10 transition font-mono text-sm text-slate-900 placeholder-slate-400 font-bold"
                            oninput="updateDetectionPreview(this.value)">
@@ -131,7 +131,7 @@
                 </div>
             </div>
         </div>
-
+ 
         {{-- Stok & Harga --}}
         <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 overflow-hidden">
             <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-4 flex items-center gap-2">
@@ -139,26 +139,13 @@
                 <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Stok &amp; Harga</h3>
             </div>
             <div class="p-5 space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Stok Saat Ini</label>
-                        <input type="text" value="{{ $product->stok_pajangan }} {{ $product->satuan }}" disabled
-                               class="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-500 text-sm font-black font-mono shadow-inner">
-                        <p class="text-[11px] text-slate-400 mt-1.5 font-medium">Diperbarui otomatis secara realtime melalui modul AI.</p>
-                    </div>
-                    <div>
-                        <label for="stok_minimum" class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">
-                            Stok Minimum <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" id="stok_minimum" name="stok_minimum"
-                               value="{{ $product->stok_minimum }}" min="0" required
-                               class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition text-sm font-bold font-mono text-slate-800">
-                        @error('stok_minimum')
-                            <p class="text-xs text-red-500 mt-1.5">⚠ {{ $message }}</p>
-                        @enderror
-                    </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Stok Saat Ini</label>
+                    <input type="text" value="{{ $product->stok_pajangan }} {{ $product->satuan }} — {{ $product->isAda() ? 'Ada' : 'Tidak Ada' }}" disabled
+                           class="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-500 text-sm font-black font-mono shadow-inner">
+                    <p class="text-[11px] text-slate-400 mt-1.5 font-medium">Diubah lewat menu Stok Masuk / Stok Keluar, bukan dari form ini.</p>
                 </div>
-
+ 
                 <div>
                     <label for="harga" class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">
                         Harga Jual <span class="text-red-500">*</span>
@@ -174,7 +161,7 @@
                 </div>
             </div>
         </div>
-
+ 
         {{-- Foto Produk --}}
         <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 overflow-hidden">
             <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-4 flex items-center justify-between">
@@ -204,8 +191,8 @@
                 @error('foto')
                     <p class="text-xs text-red-500 mt-1.5">⚠ {{ $message }}</p>
                 @enderror
-
-
+ 
+ 
                 {{-- INFO ACTION FORM SEBELUMNYA DI SINI DIHAPUS & DI-PINDAH KE FORM TERPISAH DI BAWAH --}}
                 @if ($product->status_ai === 'proses_training')
                     <div class="w-full rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-700 text-xs font-semibold shadow-sm flex items-center gap-2">
@@ -214,7 +201,7 @@
                 @endif
             </div>
         </div>
-
+ 
         {{-- Form Action Footer Utama --}}
         <div class="flex gap-3 justify-end pt-2">
             <a href="{{ route('owner.products.index') }}"
@@ -227,7 +214,7 @@
             </button>
         </div>
     </form>
-
+ 
     {{-- ══════════════════════════════════════════════════ --}}
     {{-- EXTERNAL SECONDARY FORM (MINTA DETEKSI AI) --}}
     {{-- ══════════════════════════════════════════════════ --}}
@@ -246,9 +233,9 @@
             </div>
         </form>
     @endif
-
+ 
 </div>
-
+ 
 @push('scripts')
 <script>
 (function() {
@@ -264,7 +251,7 @@
             placeholder.classList.add('hidden');
         });
     }
-
+ 
     window.updateDetectionPreview = function (value) {
         const preview = document.getElementById('detectionPreview');
         const icon    = document.getElementById('detectionIcon');
@@ -281,7 +268,7 @@
             if (label) label.textContent = 'Label kosong — produk tidak akan terdeteksi visual';
         }
     };
-
+ 
     const btnAmbilFoto = document.getElementById('btnAmbilFoto');
     if (btnAmbilFoto) {
         btnAmbilFoto.addEventListener('click', function () {
@@ -290,7 +277,7 @@
             const originalText = btn.innerHTML;
             btn.disabled = true;
             btn.textContent = '⏳ Mengambil foto...';
-
+ 
             fetch(url, {
                 method: 'POST',
                 headers: {

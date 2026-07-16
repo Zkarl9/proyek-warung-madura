@@ -1,28 +1,24 @@
 <?php
-
+ 
 namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+ 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
-class StockOut extends Model
+ 
+class CameraStatusLog extends Model
 {
-    use HasFactory;
-
-    protected $table = 'stock_outs';
-
+    public $timestamps = false;
+ 
     protected $fillable = [
         'product_id',
-        'jumlah',
-        'tipe',
-        'keterangan',
+        'status',
+        'created_at',
     ];
-
+ 
     protected $casts = [
-        'jumlah' => 'integer',
+        'created_at' => 'datetime',
     ];
-
+ 
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);

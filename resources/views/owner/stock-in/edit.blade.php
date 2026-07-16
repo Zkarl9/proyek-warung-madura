@@ -1,8 +1,8 @@
 @extends('layouts.app')
  
-@section('title', 'Tambah Stok Masuk')
-@section('page-title', 'Tambah Stok Masuk')
-@section('page-subtitle', 'Catat barang yang baru masuk ke toko')
+@section('title', 'Edit Stok Masuk')
+@section('page-title', 'Edit Stok Masuk')
+@section('page-subtitle', 'Ubah catatan stok masuk')
  
 @section('content')
 <div class="max-w-3xl mx-auto space-y-6 animate-fade-in">
@@ -18,15 +18,16 @@
                 </svg>
             </a>
             <div>
-                <h2 class="text-xl md:text-2xl font-black tracking-tight">📥 Tambah Stok Masuk</h2>
-                <p class="text-blue-200/80 text-xs md:text-sm mt-0.5 font-medium">Catat barang yang baru masuk ke toko</p>
+                <h2 class="text-xl md:text-2xl font-black tracking-tight">✏️ Edit Stok Masuk</h2>
+                <p class="text-blue-200/80 text-xs md:text-sm mt-0.5 font-medium">{{ $stockIn->product->nama_produk ?? '—' }}</p>
             </div>
         </div>
     </div>
  
     {{-- FORM --}}
-    <form method="POST" action="{{ route('owner.stock-in.store') }}" class="space-y-6">
+    <form method="POST" action="{{ route('owner.stock-in.update', $stockIn) }}" class="space-y-6">
         @csrf
+        @method('PUT')
  
         <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 overflow-hidden">
             <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-4 flex items-center gap-2">
@@ -36,21 +37,10 @@
             <div class="p-5 space-y-4">
  
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">
-                        Produk <span class="text-red-500">*</span>
-                    </label>
-                    <select name="product_id" required
-                            class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition text-sm font-bold text-slate-800 cursor-pointer">
-                        <option value="">— Pilih produk —</option>
-                        @foreach ($products as $product)
-                            <option value="{{ $product->id }}" @selected(old('product_id') == $product->id)>
-                                {{ $product->nama_produk }} (Stok saat ini: {{ $product->stok_pajangan }} {{ $product->satuan }})
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('product_id')
-                        <p class="text-xs text-red-500 mt-1.5">⚠ {{ $message }}</p>
-                    @enderror
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Produk</label>
+                    <input type="text" value="{{ $stockIn->product->nama_produk ?? '—' }}" disabled
+                           class="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-500 text-sm font-bold shadow-inner">
+                    <p class="text-[11px] text-slate-400 mt-1.5 font-medium">Produk tidak bisa diubah. Kalau salah pilih produk, hapus catatan ini lalu buat yang baru.</p>
                 </div>
  
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -58,9 +48,9 @@
                         <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">
                             Jumlah Masuk <span class="text-red-500">*</span>
                         </label>
-                        <input type="number" name="jumlah" value="{{ old('jumlah') }}" min="1" required
-                               placeholder="0"
+                        <input type="number" name="jumlah" value="{{ old('jumlah', $stockIn->jumlah) }}" min="1" required
                                class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition text-sm font-black font-mono text-slate-800">
+                        <p class="text-[11px] text-slate-400 font-medium mt-1.5">Kalau jumlah diubah, stok produk ikut menyesuaikan otomatis.</p>
                         @error('jumlah')
                             <p class="text-xs text-red-500 mt-1.5">⚠ {{ $message }}</p>
                         @enderror
@@ -73,7 +63,7 @@
                         <select name="sumber" required
                                 class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition text-sm font-bold text-slate-800 cursor-pointer">
                             @foreach ($sumber as $s)
-                                <option value="{{ $s }}" @selected(old('sumber') === $s)>{{ ucfirst($s) }}</option>
+                                <option value="{{ $s }}" @selected(old('sumber', $stockIn->sumber) === $s)>{{ ucfirst($s) }}</option>
                             @endforeach
                         </select>
                         @error('sumber')
@@ -86,10 +76,10 @@
                     <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">
                         Harga Beli per Satuan <span class="ml-1 text-[11px] font-normal text-slate-400 lowercase">(opsional)</span>
                     </label>
-                    <input type="number" name="harga_beli" value="{{ old('harga_beli') }}" min="0"
+                    <input type="number" name="harga_beli" value="{{ old('harga_beli', $stockIn->harga_beli) }}" min="0"
                            placeholder="Misal: 2000"
                            class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition text-sm font-black font-mono text-slate-800">
-                    <p class="text-[11px] text-slate-400 font-medium mt-1.5">Dipakai buat hitung Laba Kotor di Laporan. Boleh dikosongkan kalau tidak tahu/tidak mau dicatat.</p>
+                    <p class="text-[11px] text-slate-400 font-medium mt-1.5">Dipakai buat hitung Laba Kotor di Laporan.</p>
                     @error('harga_beli')
                         <p class="text-xs text-red-500 mt-1.5">⚠ {{ $message }}</p>
                     @enderror
@@ -100,8 +90,7 @@
                         Keterangan <span class="ml-1 text-[11px] font-normal text-slate-400 lowercase">(opsional)</span>
                     </label>
                     <textarea name="keterangan" rows="3"
-                              placeholder="Misal: Restock dari Supplier Utama, Invoice #1029..."
-                              class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition text-sm font-medium text-slate-800 resize-none">{{ old('keterangan') }}</textarea>
+                              class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition text-sm font-medium text-slate-800 resize-none">{{ old('keterangan', $stockIn->keterangan) }}</textarea>
                 </div>
  
             </div>
@@ -115,7 +104,7 @@
             </a>
             <button type="submit"
                     class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:shadow-lg font-bold transition text-xs uppercase tracking-wider active:scale-95">
-                💾 Simpan Catatan
+                💾 Simpan Perubahan
             </button>
         </div>
  

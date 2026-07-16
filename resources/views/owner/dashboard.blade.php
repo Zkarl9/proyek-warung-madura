@@ -1,12 +1,12 @@
 @extends('layouts.app')
-
+ 
 @section('title', 'Dashboard')
 @section('page-title', 'Dashboard')
 @section('page-subtitle', 'Ringkasan stok warung hari ini')
-
+ 
 @section('content')
 <div class="space-y-6">
-
+ 
     {{-- PENGUMUMAN DARI ADMIN --}}
     @if ($pengumuman->isNotEmpty())
         @foreach ($pengumuman as $pengumumanItem)
@@ -55,7 +55,7 @@
         </div>
         @endforeach
     @endif
-
+ 
     {{-- HEADER --}}
     <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
         <div class="absolute right-0 top-0 translate-x-1/4 -translate-y-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -70,7 +70,7 @@
             </div>
         </div>
     </div>
-
+ 
     {{-- STATS GRID --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group">
@@ -84,11 +84,11 @@
         
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group">
             <div class="flex items-center justify-between">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-500 transition-colors">Stok Tipis</p>
-                <span class="text-lg p-2 {{ $stokTipis->count() > 0 ? 'bg-red-50' : 'bg-green-50' }} rounded-xl transition-colors">⚠️</span>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-500 transition-colors">Barang Habis</p>
+                <span class="text-lg p-2 {{ $barangHabis->count() > 0 ? 'bg-red-50' : 'bg-green-50' }} rounded-xl transition-colors">⚠️</span>
             </div>
-            <p class="text-2xl md:text-4xl font-black mt-2 tracking-tight {{ $stokTipis->count() > 0 ? 'text-rose-500' : 'text-emerald-500' }}">
-                {{ $stokTipis->count() }}
+            <p class="text-2xl md:text-4xl font-black mt-2 tracking-tight {{ $barangHabis->count() > 0 ? 'text-rose-500' : 'text-emerald-500' }}">
+                {{ $barangHabis->count() }}
             </p>
             <p class="text-xs font-medium text-slate-400 mt-1">Perlu restock segera</p>
         </div>
@@ -104,17 +104,17 @@
         
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group">
             <div class="flex items-center justify-between">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-500 transition-colors">Keluar Hari Ini</p>
-                <span class="text-lg p-2 bg-indigo-50 rounded-xl group-hover:bg-indigo-100 transition-colors">✨</span>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-500 transition-colors">Omzet Hari Ini</p>
+                <span class="text-lg p-2 bg-emerald-50 rounded-xl group-hover:bg-emerald-100 transition-colors">💰</span>
             </div>
-            <p class="text-2xl md:text-4xl font-black text-slate-800 mt-2 tracking-tight font-mono">{{ $itemTerjualHariIni }}</p>
-            <p class="text-xs font-medium text-slate-400 mt-1">Item deteksi YOLO</p>
+            <p class="text-xl md:text-3xl font-black text-emerald-600 mt-2 tracking-tight font-mono">Rp{{ number_format($omzetHariIni, 0, ',', '.') }}</p>
+            <p class="text-xs font-medium text-slate-400 mt-1">Dari barang yang terjual</p>
         </div>
     </div>
-
+ 
     {{-- STOK TIPIS + GRAFIK --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
+ 
         {{-- Stok Tipis (SCROLLABLE) --}}
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[380px]">
             <div class="border-b border-slate-100 px-5 py-4 flex items-center justify-between bg-slate-50/50 flex-shrink-0">
@@ -122,10 +122,10 @@
                     <span class="h-2.5 w-2.5 rounded-full bg-rose-500 animate-pulse"></span>
                     <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider">Peringatan Stok</h3>
                 </div>
-                <span class="text-xs font-bold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg">{{ $stokTipis->count() }} Produk</span>
+                <span class="text-xs font-bold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg">{{ $barangHabis->count() }} Produk</span>
             </div>
             <div class="p-5 overflow-y-auto flex-1 scrollbar-thin">
-                @if ($stokTipis->isEmpty())
+                @if ($barangHabis->isEmpty())
                     <div class="text-center py-12">
                         <div class="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-3">
                             <span class="text-xl">✅</span>
@@ -134,30 +134,22 @@
                         <p class="text-xs text-slate-400 mt-0.5">Tidak ada produk kritis.</p>
                     </div>
                 @else
-                    <div class="space-y-4">
-                        @foreach ($stokTipis as $produk)
-                        @php $persen = $produk->stok_minimum > 0 ? min(100, ($produk->stok_pajangan / $produk->stok_minimum) * 100) : 0; @endphp
-                        <div>
-                            <div class="flex items-center justify-between mb-1.5 gap-2">
-                                <span class="text-sm font-semibold text-slate-700 truncate" title="{{ $produk->nama_produk }}">
-                                    {{ $produk->nama_produk }}
-                                </span>
-                                <span class="text-xs px-2.5 py-0.5 rounded-lg font-mono font-bold flex-shrink-0 shadow-sm
-                                    {{ $produk->stok_pajangan == 0 ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-amber-50 text-amber-600 border border-amber-100' }}">
-                                    {{ $produk->stok_pajangan }} {{ $produk->satuan }}
-                                </span>
-                            </div>
-                            <div class="h-2 rounded-full bg-slate-100 overflow-hidden shadow-inner">
-                                <div class="h-full rounded-full transition-all duration-500 {{ $produk->stok_pajangan == 0 ? 'bg-gradient-to-r from-rose-500 to-red-500' : 'bg-gradient-to-r from-amber-400 to-orange-400' }}"
-                                     style="width: {{ $persen }}%"></div>
-                            </div>
+                    <div class="space-y-3">
+                        @foreach ($barangHabis as $produk)
+                        <div class="flex items-center justify-between gap-2 py-1.5 border-b border-slate-50 last:border-0">
+                            <span class="text-sm font-semibold text-slate-700 truncate" title="{{ $produk->nama_produk }}">
+                                {{ $produk->nama_produk }}
+                            </span>
+                            <span class="text-xs px-2.5 py-0.5 rounded-lg font-mono font-bold flex-shrink-0 shadow-sm bg-rose-50 text-rose-600 border border-rose-100">
+                                🔴 Tidak Ada
+                            </span>
                         </div>
                         @endforeach
                     </div>
                 @endif
             </div>
         </div>
-
+ 
         {{-- Grafik Mingguan --}}
         <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[380px]">
             <div class="border-b border-slate-100 px-5 py-4 flex items-center gap-2 bg-slate-50/50 flex-shrink-0">
@@ -171,7 +163,7 @@
             </div>
         </div>
     </div>
-
+ 
     {{-- BARANG TERLARIS --}}
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
         <div class="border-b border-slate-100 px-5 py-4 flex items-center gap-2 bg-slate-50/50">
@@ -208,7 +200,7 @@
             @endif
         </div>
     </div>
-
+ 
     {{-- LOG AKTIVITAS (SCROLLABLE) --}}
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[420px]">
         <div class="border-b border-slate-100 px-5 py-4 flex items-center justify-between bg-slate-50/50 flex-shrink-0">
@@ -248,9 +240,9 @@
             @endforelse
         </div>
     </div>
-
+ 
 </div>
-
+ 
 {{-- Kustomisasi Scrollbar Minimalis --}}
 <style>
     .scrollbar-thin::-webkit-scrollbar {
@@ -268,12 +260,12 @@
     }
 </style>
 @endsection
-
+ 
 @push('scripts')
 <script>
     const announcementKey = 'ownerAnnouncementDismissed';
     const announcementIds = @json($pengumuman->pluck('id')->values());
-
+ 
     function getDismissedAnnouncements() {
         try {
             const stored = JSON.parse(localStorage.getItem(announcementKey));
@@ -286,9 +278,9 @@
             return [];
         } catch { return []; }
     }
-
+ 
     function isAnnouncementDismissed(id) { return getDismissedAnnouncements().includes(Number(id)); }
-
+ 
     function dismissAnnouncement(id) {
         const dismissed = getDismissedAnnouncements();
         const numericId = Number(id);
@@ -297,11 +289,11 @@
             localStorage.setItem(announcementKey, JSON.stringify(dismissed));
         }
     }
-
+ 
     function hideAnnouncementCard(id) { document.getElementById(`announcementCard-${id}`)?.classList.add('hidden'); }
-
+ 
     announcementIds.forEach(function (id) { if (isAnnouncementDismissed(id)) { hideAnnouncementCard(id); } });
-
+ 
     document.querySelectorAll('.dismissAnnouncement').forEach(function (button) {
         button.addEventListener('click', function () {
             const id = this.dataset.announcementId;
@@ -310,7 +302,7 @@
             hideAnnouncementCard(id);
         });
     });
-
+ 
     // 💡 PENYELESAIAN ERROR DI SINI: Kode inisialisasi Chart dibungkus DOMContentLoaded
     document.addEventListener('DOMContentLoaded', function() {
         const canvasElement = document.getElementById('grafikMingguan');
@@ -319,7 +311,7 @@
             const gradient = ctx.createLinearGradient(0, 0, 0, 200);
             gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
             gradient.addColorStop(1, 'rgba(37, 99, 235, 0.00)');
-
+ 
             new Chart(ctx, {
                 type: 'line',
                 data: {

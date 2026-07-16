@@ -1,43 +1,50 @@
 <?php
-
+ 
 namespace App\Http\Controllers\Owner;
-
+ 
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use App\Models\Product;
-use App\Models\StockOut;
-
+use App\Models\StockMovement;
+ 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $stokTipis = Product::stokTipis()->orderBy('stok_pajangan')->get();
+        $barangHabis = Product::tidakAda()->orderBy('nama_produk')->get();
         $totalProduk = Product::count();
-        $itemTerjualHariIni = StockOut::whereDate('created_at', today())->sum('jumlah');
-        $recentSales = StockOut::with('product')->latest()->limit(10)->get();
-
-        $barangTerlaris = StockOut::selectRaw('product_id, sum(jumlah) as total_terjual')
+ 
+        // Omzet cuma dihitung dari stok keluar dengan alasan "terjual" — barang rusak/kadaluarsa/retur tidak dihitung sebagai pemasukan.
+        $omzetHariIni = StockMovement::keluar()->where('alasan', 'terjual')
+            ->whereDate('created_at', today())
+            ->with('product')
+            ->get()
+            ->sum(fn ($item) => $item->jumlah * ($item->product->harga ?? 0));
+ 
+        $recentSales = StockMovement::keluar()->with('product')->latest()->limit(10)->get();
+ 
+        $barangTerlaris = StockMovement::keluar()->selectRaw('product_id, sum(jumlah) as total_terjual')
             ->with('product')
             ->groupBy('product_id')
             ->orderByDesc('total_terjual')
             ->limit(5)
             ->get();
-
-        $grafikMingguan = StockOut::selectRaw('DATE(created_at) as tanggal, SUM(jumlah) as total')
+ 
+        $grafikMingguan = StockMovement::keluar()->selectRaw('DATE(created_at) as tanggal, SUM(jumlah) as total')
             ->where('created_at', '>=', now()->subDays(7))
             ->groupBy('tanggal')
             ->orderBy('tanggal')
             ->get();
-
+ 
         $pengumuman = Announcement::whereDoesntHave('dismissedBy', function ($q) {
                 $q->where('user_id', auth()->id());
             })
             ->latest()
             ->limit(5)
             ->get();
-
+ 
         return view('owner.dashboard', compact(
-            'stokTipis', 'totalProduk', 'itemTerjualHariIni', 'recentSales', 'barangTerlaris', 'grafikMingguan', 'pengumuman'
+            'barangHabis', 'totalProduk', 'omzetHariIni', 'recentSales', 'barangTerlaris', 'grafikMingguan', 'pengumuman'
         ));
     }
 }

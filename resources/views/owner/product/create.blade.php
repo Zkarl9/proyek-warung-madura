@@ -1,12 +1,12 @@
 @extends('layouts.app')
-
+ 
 @section('title', 'Tambah Produk')
 @section('page-title', 'Tambah Produk')
 @section('page-subtitle', 'Daftarkan barang baru untuk dideteksi kamera')
-
+ 
 @section('content')
 <div class="max-w-5xl mx-auto space-y-6 animate-fade-in">
-
+ 
     {{-- ══════════════════════════════════════════════════ --}}
     {{-- HEADER --}}
     {{-- ══════════════════════════════════════════════════ --}}
@@ -27,13 +27,13 @@
             </div>
         </div>
     </div>
-
+ 
     {{-- ══════════════════════════════════════════════════ --}}
     {{-- FORM UTAMA --}}
     {{-- ══════════════════════════════════════════════════ --}}
     <form action="{{ route('owner.products.store') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         @csrf
-
+ 
         {{-- KOLOM KIRI: INPUT DATA --}}
         <div class="lg:col-span-2 space-y-6">
             
@@ -56,7 +56,7 @@
                             <p class="text-xs text-rose-500 font-medium mt-1.5 flex items-center gap-1"><span>⚠</span> {{ $message }}</p>
                         @enderror
                     </div>
-
+ 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label for="kategori" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Kategori</label>
@@ -87,7 +87,7 @@
                     </div>
                 </div>
             </div>
-
+ 
             {{-- Blok 2: Stok & Harga --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all duration-300 hover:shadow-md">
                 <div class="bg-slate-50/70 border-b border-slate-100 px-5 py-4 flex items-center gap-2.5">
@@ -96,32 +96,19 @@
                 </div>
                 
                 <div class="p-5 space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label for="stok_pajangan" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                                Stok Awal Pajangan <span class="text-rose-500">*</span>
-                            </label>
-                            <input type="number" id="stok_pajangan" name="stok_pajangan"
-                                   value="{{ old('stok_pajangan', 0) }}" min="0" required
-                                   class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 bg-white transition duration-200 text-sm font-bold text-slate-800 font-mono">
-                            @error('stok_pajangan')
-                                <p class="text-xs text-rose-500 font-medium mt-1.5 flex items-center gap-1"><span>⚠</span> {{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="stok_minimum" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                                Batas Stok Minimum <span class="text-rose-500">*</span>
-                            </label>
-                            <input type="number" id="stok_minimum" name="stok_minimum"
-                                   value="{{ old('stok_minimum', 5) }}" min="0" required
-                                   class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 bg-white transition duration-200 text-sm font-bold text-slate-800 font-mono">
-                            <p class="text-[11px] text-slate-400 font-medium mt-1.5">Sistem akan memberi alert jika stok di bawah angka ini.</p>
-                            @error('stok_minimum')
-                                <p class="text-xs text-rose-500 font-medium mt-1.5 flex items-center gap-1"><span>⚠</span> {{ $message }}</p>
-                            @enderror
-                        </div>
+                    <div>
+                        <label for="stok_pajangan" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                            Stok Awal Pajangan <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="number" id="stok_pajangan" name="stok_pajangan"
+                               value="{{ old('stok_pajangan', 0) }}" min="0" required
+                               class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 bg-white transition duration-200 text-sm font-bold text-slate-800 font-mono">
+                        <p class="text-[11px] text-slate-400 font-medium mt-1.5">Status "Ada/Tidak Ada" akan otomatis mengikuti angka ini.</p>
+                        @error('stok_pajangan')
+                            <p class="text-xs text-rose-500 font-medium mt-1.5 flex items-center gap-1"><span>⚠</span> {{ $message }}</p>
+                        @enderror
                     </div>
-
+ 
                     <div>
                         <label for="harga" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                             Harga Jual Nominal <span class="text-rose-500">*</span>
@@ -139,7 +126,7 @@
                 </div>
             </div>
         </div>
-
+ 
         {{-- KOLOM KANAN: YOLO CONFIG & MEDIA --}}
         <div class="space-y-6">
             
@@ -153,19 +140,19 @@
                 <div class="p-5 space-y-4">
                     <div class="border border-violet-100 bg-violet-50/40 rounded-xl p-4">
                         <label for="yolo_label" class="block text-xs font-bold text-violet-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                            <span>🤖</span> ID Kelas Dataset <span class="text-rose-500">*</span>
+                            <span>🤖</span> ID Kelas Dataset <span class="text-slate-400 normal-case font-medium">(opsional)</span>
                         </label>
                         <p class="text-[11px] text-violet-600/90 font-medium mb-3 leading-relaxed">
-                            Kunci deteksi AI. Wajib sinkron dengan *class label* model YOLOv8 Anda (Gunakan huruf kecil & underscore).
+                            Isi hanya jika produk ini dipantau kamera. Kosongkan kalau produk berada di luar jangkauan kamera, di rak lain, atau memang dikelola manual saja.
                         </p>
-
+ 
                         <div id="detectionPreview"
                              class="flex items-center gap-2 mb-4 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 bg-slate-100 text-slate-500 border border-slate-200">
                             <span id="detectionIcon" class="text-base">✋</span>
-                            <span id="detectionLabel">Belum dikonfigurasi</span>
+                            <span id="detectionLabel">Manual saja (tidak dipantau kamera)</span>
                         </div>
-
-                        <input type="text" id="yolo_label" name="yolo_label" value="{{ old('yolo_label') }}" required
+ 
+                        <input type="text" id="yolo_label" name="yolo_label" value="{{ old('yolo_label') }}"
                                placeholder="Misal: aqua_600ml, indomie_miegoreng"
                                class="w-full px-4 py-2.5 border border-violet-200 rounded-xl bg-white focus:outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition font-mono text-sm font-bold text-violet-900 placeholder-slate-400"
                                oninput="updateDetectionPreview(this.value)">
@@ -179,7 +166,7 @@
                     </div>
                 </div>
             </div>
-
+ 
             {{-- FOTO MEDIA UPLOAD --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all duration-300 hover:shadow-md">
                 <div class="bg-slate-50/70 border-b border-slate-100 px-5 py-4 flex items-center gap-2.5">
@@ -201,7 +188,7 @@
                                 </svg>
                             </button>
                         </div>
-
+ 
                         {{-- Info Placeholder --}}
                         <div id="placeholderFoto" class="text-slate-400 transition-transform duration-300 group-hover:-translate-y-0.5">
                             <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-slate-400 mx-auto mb-3 border border-slate-100 group-hover:text-blue-500 group-hover:shadow-md transition duration-300">
@@ -231,10 +218,10 @@
                 </button>
             </div>
         </div>
-
+ 
     </form>
 </div>
-
+ 
 @push('scripts')
 <script>
     const fotoInput = document.getElementById('foto');
@@ -242,16 +229,16 @@
     const previewFoto = document.getElementById('previewFoto');
     const placeholderFoto = document.getElementById('placeholderFoto');
     const removeFotoBtn = document.getElementById('removeFotoBtn');
-
+ 
     fotoInput.addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (!file) return;
-
+ 
         previewFoto.src = URL.createObjectURL(file);
         previewContainer.classList.remove('hidden');
         placeholderFoto.classList.add('hidden');
     });
-
+ 
     removeFotoBtn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation(); // Mencegah klik menembus ke file input
@@ -260,7 +247,7 @@
         previewContainer.classList.add('hidden');
         placeholderFoto.classList.remove('hidden');
     });
-
+ 
     window.updateDetectionPreview = function (value) {
         const preview = document.getElementById('detectionPreview');
         const icon    = document.getElementById('detectionIcon');
@@ -274,10 +261,10 @@
         } else {
             preview.className = 'flex items-center gap-2 mb-4 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 bg-slate-50 text-slate-400 border border-slate-200';
             icon.textContent  = '✋';
-            label.textContent = 'Belum dikonfigurasi';
+            label.textContent = 'Manual saja (tidak dipantau kamera)';
         }
     };
-
+ 
     // Jalankan fungsi saat reload (jika ada input dari 'old value')
     updateDetectionPreview(document.getElementById('yolo_label').value);
 </script>

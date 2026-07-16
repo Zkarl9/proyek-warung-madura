@@ -1,118 +1,115 @@
 <?php
+ 
 namespace App\Http\Controllers\Api;
+ 
 use App\Http\Controllers\Controller;
 use App\Models\NotificationSetting;
 use App\Models\Product;
-use App\Models\StockOut;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+ 
 class AiStockController extends Controller
 {
     public function update(Request $request)
     {
         abort_unless($request->bearerToken() === config('services.raspi.api_key'), 401);
+ 
         $request->validate([
             'camera_id' => ['required'],
             'zone' => ['required', 'string'],
             'detections' => ['required', 'array'],
             'detections.*.product_label' => ['required', 'string'],
-            'detections.*.count' => ['required', 'integer', 'min:0'],
+            'detections.*.status' => ['required', 'in:ada,habis'],
         ]);
-        $graceSeconds = (int) config('services.raspi.flicker_grace_seconds', 5);
+ 
+        // Jendela stabilisasi (anti-flicker): status baru baru dikonfirmasi
+        // kalau bertahan minimal sekian detik berturut-turut.
+        $graceSeconds = (int) config('services.raspi.flicker_grace_seconds', 8);
         $hasil = [];
+ 
         foreach ($request->detections as $item) {
             $product = Product::where('yolo_label', $item['product_label'])->first();
             if (! $product) {
                 continue;
             }
-
-            $incoming = (int) $item['count'];
-            $confirmed = $product->stok_pajangan;
-            $flickerKey = "stock_flicker:{$product->id}";
-
-            if ($incoming === $confirmed) {
-                $hasil[] = [
-                    'yolo_label' => $product->yolo_label,
-                    'stok_pajangan' => $product->stok_pajangan,
-                    'stok_tipis' => $product->isStokTipis(),
-                ];
+ 
+            $statusBaru = $item['status'];
+            $statusTersimpan = $product->status_kamera;
+            $debounceKey = "status_kamera_pending:{$product->id}";
+ 
+            // Status sama dengan yang tersimpan, tidak ada perubahan.
+            if ($statusBaru === $statusTersimpan) {
+                Cache::forget($debounceKey);
+                $hasil[] = $this->ringkasan($product);
                 continue;
             }
-
-            if ($incoming > $confirmed) {
-                $jejak = Cache::get($flickerKey);
-
-                if ($jejak && $jejak['nilai_sebelum'] === $incoming && (now()->timestamp - $jejak['at']) <= $graceSeconds) {
-                    DB::transaction(function () use ($product, $incoming, $jejak) {
-                        StockOut::where('id', $jejak['record_id'])->delete();
-                        $product->update(['stok_pajangan' => $incoming]);
-                    });
-                    Cache::forget($flickerKey);
-                    $hasil[] = [
-                        'yolo_label' => $product->yolo_label,
-                        'stok_pajangan' => $product->stok_pajangan,
-                        'stok_tipis' => $product->isStokTipis(),
-                        'catatan' => 'dibatalkan_gangguan_sesaat',
-                    ];
-                    continue;
-                }
-
-                $hasil[] = [
-                    'yolo_label' => $product->yolo_label,
-                    'stok_pajangan' => $product->stok_pajangan,
-                    'stok_tipis' => $product->isStokTipis(),
-                    'catatan' => 'kenaikan_diabaikan_input_manual_diperlukan',
-                ];
-                continue;
-            }
-
-            $selisih = $confirmed - $incoming;
-            $record = null;
-            DB::transaction(function () use ($product, $item, $selisih, &$record) {
-                $product->update(['stok_pajangan' => $item['count']]);
-                $record = StockOut::create([
+ 
+            $pending = Cache::get($debounceKey);
+ 
+            // Status baru sudah konsisten sejak deteksi sebelumnya & sudah lewat jendela stabilisasi -> konfirmasi.
+            if ($pending && $pending['status'] === $statusBaru && (now()->timestamp - $pending['at']) >= $graceSeconds) {
+                $product->update(['status_kamera' => $statusBaru]);
+                Cache::forget($debounceKey);
+ 
+                // Catat riwayat perubahan status — dipakai buat panel "Riwayat Deteksi" di halaman Kamera Live.
+                \App\Models\CameraStatusLog::create([
                     'product_id' => $product->id,
-                    'jumlah' => $selisih,
-                    'tipe' => 'otomatis',
-                    'keterangan' => 'Terdeteksi otomatis oleh kamera',
+                    'status' => $statusBaru,
+                    'created_at' => now(),
                 ]);
-            });
-
-            Cache::put($flickerKey, [
-                'record_id' => $record->id,
-                'nilai_sebelum' => $confirmed,
-                'at' => now()->timestamp,
-            ], now()->addSeconds($graceSeconds));
-
-            if ($product->isStokTipis()) {
-                $this->kirimNotifikasiStokMenipis($product, (int) $item['count']);
+ 
+                if ($statusBaru === 'habis') {
+                    $this->kirimNotifikasiBarangHabis($product);
+                } else {
+                    // Balik terdeteksi ada lagi -> reset supaya notifikasi bisa terkirim ulang kalau habis lagi nanti.
+                    Cache::forget("telegram_notif_sent:{$product->id}");
+                }
+ 
+                $hasil[] = $this->ringkasan($product);
+                continue;
             }
-            $hasil[] = [
-                'yolo_label' => $product->yolo_label,
-                'stok_pajangan' => $product->stok_pajangan,
-                'stok_tipis' => $product->isStokTipis(),
-            ];
+ 
+            // Belum stabil, mulai/lanjutkan hitung mundur jendela stabilisasi.
+            if (! $pending || $pending['status'] !== $statusBaru) {
+                Cache::put($debounceKey, [
+                    'status' => $statusBaru,
+                    'at' => now()->timestamp,
+                ], now()->addSeconds($graceSeconds + 10));
+            }
+ 
+            $hasil[] = $this->ringkasan($product) + ['catatan' => 'menunggu_stabilisasi'];
         }
+ 
         return response()->json(['status' => 'ok', 'data' => $hasil]);
     }
-
-    protected function kirimNotifikasiStokMenipis(Product $product, int $sisaStok): void
+ 
+    protected function ringkasan(Product $product): array
+    {
+        return [
+            'yolo_label' => $product->yolo_label,
+            'status_kamera' => $product->status_kamera,
+        ];
+    }
+ 
+    protected function kirimNotifikasiBarangHabis(Product $product): void
     {
         $notifKey = "telegram_notif_sent:{$product->id}";
         if (Cache::has($notifKey)) {
             return;
         }
         Cache::put($notifKey, true, now()->addMinutes(15));
-        $pesan = "⚠️ *STOK MENIPIS*\n\n"
+ 
+        $pesan = "🔴 *BARANG HABIS*\n\n"
             . "📦 Produk: {$product->nama_produk}\n"
-            . "🔢 Sisa stok: {$sisaStok} pcs\n"
+            . "📷 Terdeteksi kosong di rak oleh kamera\n"
             . "🕒 " . now()->format('d M Y, H:i') . " WIB";
+ 
         $chatIds = NotificationSetting::where('is_active', true)
             ->whereNotNull('telegram_chat_id')
             ->pluck('telegram_chat_id');
+ 
         foreach ($chatIds as $chatId) {
             try {
                 Http::post("https://api.telegram.org/bot" . config('services.telegram.bot_token') . "/sendMessage", [
