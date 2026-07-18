@@ -41,7 +41,70 @@
             </div>
         </div>
         @else
-        <div class="overflow-x-auto">
+
+        {{-- CARD VIEW — mobile & tablet --}}
+        <div class="lg:hidden divide-y divide-slate-100">
+            @foreach ($riwayat as $item)
+            <div class="p-4 space-y-3">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                        <p class="font-bold text-slate-800 text-sm leading-tight">{{ $item->product->nama_produk ?? '—' }}</p>
+                        <p class="text-[11px] text-slate-400 font-mono mt-0.5">
+                            {{ $item->created_at->format('d M Y') }} · {{ $item->created_at->format('H:i') }} WIB
+                        </p>
+                    </div>
+                    <span class="flex-shrink-0 inline-flex items-center px-2.5 py-1 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-black font-mono rounded-lg whitespace-nowrap">
+                        -{{ $item->jumlah }} {{ $item->product->satuan ?? '' }}
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    @if ($item->tipe === 'otomatis')
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-black rounded-lg bg-rose-50 border border-rose-200 text-rose-700">
+                            📷 Kamera
+                        </span>
+                    @else
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-black rounded-lg bg-amber-50 border border-amber-200 text-amber-700">
+                            ✋ Manual
+                        </span>
+                    @endif
+                    @if ($item->alasan)
+                        <span class="text-xs font-bold text-slate-600 capitalize">{{ $item->alasan }}</span>
+                    @endif
+                </div>
+
+                @if ($item->keterangan)
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Keterangan</p>
+                    <p class="text-xs text-slate-500 leading-relaxed mt-0.5">{{ $item->keterangan }}</p>
+                </div>
+                @endif
+
+                @if ($item->tipe !== 'otomatis')
+                <div class="flex items-center gap-1.5 pt-1">
+                    <a href="{{ route('owner.stock-out.edit', $item) }}"
+                       class="flex-1 text-center px-2.5 py-2 bg-slate-50 hover:bg-rose-50 border border-slate-200 hover:border-rose-300 text-slate-500 hover:text-rose-700 rounded-lg font-bold text-[11px] transition active:scale-95">
+                        ✏️ Edit
+                    </a>
+                    <form method="POST" action="{{ route('owner.stock-out.destroy', $item) }}"
+                          onsubmit="return confirm('Yakin mau hapus catatan ini? Stok akan dikembalikan otomatis.');" class="flex-1">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                                class="w-full px-2.5 py-2 bg-slate-50 hover:bg-rose-50 border border-slate-200 hover:border-rose-300 text-slate-500 hover:text-rose-700 rounded-lg font-bold text-[11px] transition active:scale-95">
+                            🗑️ Hapus
+                        </button>
+                    </form>
+                </div>
+                @else
+                <p class="text-[11px] text-slate-300 italic pt-1">Arsip — dicatat otomatis oleh kamera</p>
+                @endif
+            </div>
+            @endforeach
+        </div>
+
+        {{-- TABLE VIEW — desktop --}}
+        <div class="hidden lg:block overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="bg-slate-50 border-b border-slate-200 text-left">

@@ -1,12 +1,12 @@
 @extends('layouts.app')
- 
+
 @section('title', 'Produk')
 @section('page-title', 'Produk')
 @section('page-subtitle', 'Kelola daftar barang & label deteksi YOLOv8')
- 
+
 @section('content')
 <div class="max-w-7xl mx-auto space-y-6 animate-fade-in">
- 
+
     {{-- ══════════════════════════════════════════════════ --}}
     {{-- HEADER DENGAN SUMMARY STATS --}}
     {{-- ══════════════════════════════════════════════════ --}}
@@ -30,7 +30,7 @@
             </a>
         </div>
     </div>
- 
+
     {{-- ══════════════════════════════════════════════════ --}}
     {{-- FILTER & PENCARIAN --}}
     {{-- ══════════════════════════════════════════════════ --}}
@@ -45,7 +45,7 @@
                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50/50 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 bg-white transition duration-200 text-sm font-medium text-slate-800 placeholder-slate-400">
                 </div>
             </div>
- 
+
             <div>
                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Status AI Dataset</label>
                 <div class="relative">
@@ -63,7 +63,7 @@
             </div>
         </div>
     </div>
- 
+
     @if ($products->count() === 0)
     {{-- EMPTY STATE --}}
     <div class="bg-white rounded-2xl border border-slate-200 shadow-md px-6 py-16 text-center max-w-xl mx-auto">
@@ -84,7 +84,7 @@
         </div>
     </div>
     @else
- 
+
     @php
         $statusLabel = [
             'belum_siap'      => 'Belum Siap',
@@ -99,24 +99,26 @@
             'siap_deteksi'    => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
         ];
     @endphp
- 
+
     {{-- ══════════════════════════════════════════════════ --}}
-    {{-- CARD LAYOUT (SUDAH DI-FIX) --}}
+    {{-- CARD LAYOUT --}}
     {{-- ══════════════════════════════════════════════════ --}}
     <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach($products as $produk)
         @php
-            $stokChipCard = $produk->isAda()
-                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                : 'bg-rose-100 text-rose-800 border border-rose-300';
- 
-            $stokLabelCard = $produk->isAda() ? '🟢 Ada' : '🔴 Tidak Ada';
+            $habisSekarang = $produk->isHabisGabungan();
+
+            $stokChipCard = $habisSekarang
+                ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                : 'bg-emerald-100 text-emerald-800 border border-emerald-300';
+
+            $stokLabelCard = $habisSekarang ? '🔴 Tidak Ada' : '🟢 Ada';
         @endphp
         
         <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 p-5 space-y-4 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:border-blue-300 group"
              data-status="{{ $produk->status_ai }}"
              data-search="{{ strtolower($produk->nama_produk . ' ' . $produk->yolo_label . ' ' . $produk->kategori) }}">
- 
+
             <div>
                 {{-- Row 1: Foto + Info Utama --}}
                 <div class="flex items-start gap-3.5">
@@ -126,9 +128,8 @@
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center justify-between gap-2">
                             <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider truncate max-w-[100px]">{{ $produk->kategori ?? 'No Kategori' }}</span>
-                            {{-- FIX DI SINI: Mengeluarkan shadow-sm dari penutup variabel Blade --}}
-                            <span class="flex-shrink-0 px-2 py-0.5 text-[10px] font-black rounded-lg shadow-sm {{ $stokChipCard }}">
-                                {{ $stokLabelCard }}
+                            <span class="flex-shrink-0 px-2 py-0.5 text-[10px] font-black rounded-lg shadow-sm {{ $stokChipCard }}" title="{{ $produk->yolo_label ? 'Status real-time dari kamera' : 'Status dari catatan stok manual' }}">
+                                {{ $produk->yolo_label ? '📷 ' : '' }}{{ $stokLabelCard }}
                             </span>
                         </div>
                         
@@ -149,7 +150,7 @@
                         @endif
                     </div>
                 </div>
- 
+
                 {{-- Row 2: Grid Metrik Data Fisik --}}
                 <div class="grid grid-cols-2 gap-2 text-center mt-4 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                     <div class="border-r border-slate-200">
@@ -165,7 +166,7 @@
                     </div>
                 </div>
             </div>
- 
+
             {{-- Bagian Action Bawah --}}
             <div class="space-y-3 pt-2">
                 {{-- Row 3: Status AI Integrator --}}
@@ -188,7 +189,7 @@
                         
                     </div>
                 </div>
- 
+
                 {{-- Row 4: Aksi Utama Form Manajemen --}}
                 <div class="flex gap-2">
                     <a href="{{ route('owner.products.edit', $produk) }}"
@@ -201,21 +202,21 @@
                     </button>
                 </div>
             </div>
- 
+
         </div>
         @endforeach
     </div>
- 
+
     {{-- Blok Pagination Kustom Tailwind --}}
     @if($products->hasPages())
     <div class="flex justify-center pt-4">
         {{ $products->links() }}
     </div>
     @endif
- 
+
     @endif
 </div>
- 
+
 {{-- ══════════════════════════════════════════════════ --}}
 {{-- MODAL HAPUS --}}
 {{-- ══════════════════════════════════════════════════ --}}
@@ -246,29 +247,29 @@
         </div>
     </div>
 </div>
- 
+
 @push('scripts')
 <script>
 (function () {
     const searchInput  = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
     const productGrid  = document.getElementById('productGrid');
- 
+
     function filterAll() {
         const term   = (searchInput?.value || '').toLowerCase().trim();
         const status = statusFilter?.value || '';
- 
+
         if (!productGrid) return;
         
         const cards = productGrid.querySelectorAll('[data-search]');
- 
+
         cards.forEach(function (card) {
             const searchText = card.dataset.search || '';
             const cardStatus = card.dataset.status || '';
             
             let matchSearch = term === '' || searchText.includes(term);
             let matchStatus = status === '' || cardStatus === status;
- 
+
             if (matchSearch && matchStatus) {
                 card.style.setProperty('display', '', 'important');
             } else {
@@ -276,10 +277,10 @@
             }
         });
     }
- 
+
     if (searchInput)  searchInput.addEventListener('input', filterAll);
     if (statusFilter) statusFilter.addEventListener('change', filterAll);
- 
+
     window.bukaModalHapus = function (id, nama) {
         document.getElementById('namaProdukHapus').textContent = nama;
         document.getElementById('formHapus').action = `/owner/products/${id}`;
@@ -288,7 +289,7 @@
         modal.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
     };
- 
+
     window.tutupModalHapus = function () {
         const modal = document.getElementById('modalHapus');
         modal.classList.add('hidden');

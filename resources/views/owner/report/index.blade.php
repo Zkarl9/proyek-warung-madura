@@ -152,7 +152,7 @@ Sebagian produk yang terjual di periode ini belum pernah diisi <strong>harga bel
 <div class="bg-white rounded-2xl shadow-md border-2 border-slate-200/80 overflow-hidden">
 <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-4 flex items-center gap-2">
 <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
-<h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Produk Paling Sering Keluar</h3>
+<h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Produk Terjual</h3>
 </div>
 <div class="p-5 h-full max-h-[350px] overflow-y-auto scrollbar-thin">
 @if ($produkTerlaris->isEmpty())

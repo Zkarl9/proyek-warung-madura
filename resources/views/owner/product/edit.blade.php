@@ -167,17 +167,30 @@
             <div class="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 px-5 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
-                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Foto Materi Dataset</h3>
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Gambar Produk</h3>
                 </div>
             </div>
             <div class="p-5 space-y-4">
                 <div class="relative border-2 border-dashed border-slate-300 hover:border-blue-400 rounded-2xl p-6 text-center bg-slate-50 hover:bg-blue-50/40 transition-all cursor-pointer group shadow-inner">
                     <input type="file" id="foto" name="foto" accept="image/*"
                            class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10">
-                    <img id="previewFoto"
-                         src="{{ $product->foto ? asset('storage/' . $product->foto) : '' }}"
-                         alt="{{ $product->nama_produk }}"
-                         class="{{ $product->foto ? '' : 'hidden' }} h-32 w-32 object-cover rounded-xl mx-auto border-2 border-slate-200 shadow-md mb-2 group-hover:scale-105 transition duration-200">
+                    <input type="hidden" id="hapus_foto" name="hapus_foto" value="0">
+
+                    {{-- Wrapper Preview + Tombol Hapus (X) --}}
+                    <div id="previewContainer" class="{{ $product->foto ? '' : 'hidden' }} relative inline-block group/preview mb-2">
+                        <img id="previewFoto"
+                             src="{{ $product->foto ? asset('storage/' . $product->foto) : '' }}"
+                             alt="{{ $product->nama_produk }}"
+                             onerror="this.style.setProperty('display','none','important'); document.getElementById('previewContainer').style.setProperty('display','none','important'); document.getElementById('placeholderFoto').style.setProperty('display','block','important');"
+                             class="h-32 w-32 object-cover rounded-xl mx-auto border-2 border-slate-200 shadow-md group-hover:scale-105 transition duration-200">
+                        <button type="button" id="removeFotoBtn"
+                                class="absolute -top-2 -right-2 bg-rose-500 hover:bg-rose-600 text-white p-1.5 rounded-full shadow-md transition duration-200 hover:scale-110 z-20">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+
                     <div id="placeholderFoto" class="{{ $product->foto ? 'hidden' : '' }} text-slate-400 py-4">
                         <svg class="w-10 h-10 mx-auto mb-2 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -239,16 +252,42 @@
 @push('scripts')
 <script>
 (function() {
-    const fotoInput = document.getElementById('foto');
+    const fotoInput        = document.getElementById('foto');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewFoto       = document.getElementById('previewFoto');
+    const placeholderFoto   = document.getElementById('placeholderFoto');
+    const removeFotoBtn     = document.getElementById('removeFotoBtn');
+    const hapusFotoInput    = document.getElementById('hapus_foto');
+
+    function showPreview() {
+        if (previewContainer) previewContainer.style.setProperty('display', 'inline-block', 'important');
+        if (previewFoto) previewFoto.style.setProperty('display', 'block', 'important');
+        if (placeholderFoto) placeholderFoto.style.setProperty('display', 'none', 'important');
+    }
+
+    function showPlaceholder() {
+        if (previewContainer) previewContainer.style.setProperty('display', 'none', 'important');
+        if (placeholderFoto) placeholderFoto.style.setProperty('display', 'block', 'important');
+    }
+
     if (fotoInput) {
         fotoInput.addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (!file) return;
-            const preview     = document.getElementById('previewFoto');
-            const placeholder = document.getElementById('placeholderFoto');
-            preview.src       = URL.createObjectURL(file);
-            preview.classList.remove('hidden');
-            placeholder.classList.add('hidden');
+            previewFoto.src = URL.createObjectURL(file);
+            showPreview();
+            hapusFotoInput.value = '0'; // batal hapus kalau user pilih foto baru
+        });
+    }
+
+    if (removeFotoBtn) {
+        removeFotoBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation(); // Mencegah klik menembus ke file input di belakangnya
+            fotoInput.value = '';               // reset file yang lagi dipilih (kalau ada)
+            previewFoto.src = '';
+            showPlaceholder();
+            hapusFotoInput.value = '1';         // tandai: hapus foto lama pas disimpan
         });
     }
  

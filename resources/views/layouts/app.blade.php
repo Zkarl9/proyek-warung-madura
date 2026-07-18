@@ -145,25 +145,25 @@
             
             {{-- Flash Alert: Status Sukses --}}
             @if (session('status'))
-            <div class="mb-5 flex items-center gap-3 px-4 py-3.5 bg-emerald-50 border border-emerald-200/60 text-emerald-800 rounded-2xl text-sm font-semibold shadow-sm shadow-emerald-50/50 animate-fadeIn">
-                <div class="p-1 bg-emerald-500 rounded-lg text-white">
+            <div id="flash-status" class="mb-5 flex items-center gap-3 px-4 py-3.5 bg-emerald-50 border border-emerald-200/60 text-emerald-800 rounded-2xl text-sm font-semibold shadow-sm shadow-emerald-50/50 animate-fadeIn transition-all duration-500 ease-out">
+                <div class="p-1 bg-emerald-500 rounded-lg text-white flex-shrink-0">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
                 </div>
-                {{ session('status') }}
+                <span class="flex-1">{{ session('status') }}</span>
             </div>
             @endif
 
             {{-- Flash Alert: Status Gagal/Error --}}
             @if (session('error'))
-            <div class="mb-5 flex items-center gap-3 px-4 py-3.5 bg-rose-50 border border-rose-200/60 text-rose-800 rounded-2xl text-sm font-semibold shadow-sm shadow-rose-50/50 animate-fadeIn">
-                <div class="p-1 bg-rose-500 rounded-lg text-white">
+            <div id="flash-error" class="mb-5 flex items-center gap-3 px-4 py-3.5 bg-rose-50 border border-rose-200/60 text-rose-800 rounded-2xl text-sm font-semibold shadow-sm shadow-rose-50/50 animate-fadeIn transition-all duration-500 ease-out">
+                <div class="p-1 bg-rose-500 rounded-lg text-white flex-shrink-0">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
-                {{ session('error') }}
+                <span class="flex-1">{{ session('error') }}</span>
             </div>
             @endif
 
@@ -189,6 +189,27 @@
         overlay.classList.add('opacity-0');
         setTimeout(() => overlay.classList.add('hidden'), 300);
     }
+
+    // Logika Auto-Dismiss Notifikasi Flash (Sukses/Error) — hilang otomatis 5 detik
+    function dismissFlash(el) {
+        if (!el) return;
+        el.style.transition = 'opacity 0.4s ease, margin 0.4s ease, padding 0.4s ease, max-height 0.4s ease';
+        el.style.opacity = '0';
+        el.style.maxHeight = el.offsetHeight + 'px';
+        void el.offsetHeight; // force reflow supaya transisi kepakai
+        el.style.maxHeight = '0px';
+        el.style.marginBottom = '0px';
+        el.style.paddingTop = '0px';
+        el.style.paddingBottom = '0px';
+        el.style.overflow = 'hidden';
+        setTimeout(function () { el.remove(); }, 400);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('#flash-status, #flash-error').forEach(function (el) {
+            setTimeout(function () { dismissFlash(el); }, 5000);
+        });
+    });
 </script>
 
 @else

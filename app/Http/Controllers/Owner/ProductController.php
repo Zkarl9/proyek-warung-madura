@@ -60,15 +60,22 @@ class ProductController extends Controller
             'harga' => ['required', 'integer', 'min:0'],
             'satuan' => ['required', 'string'],
             'foto' => ['nullable', 'image', 'max:4096'],
+            'hapus_foto' => ['nullable', 'boolean'],
         ]);
  
         if ($request->hasFile('foto')) {
+            // Upload foto baru — hapus foto lama kalau ada.
             if ($product->foto) {
                 Storage::disk('public')->delete($product->foto);
             }
             $data['foto'] = $request->file('foto')->store('products', 'public');
+        } elseif ($request->boolean('hapus_foto') && $product->foto) {
+            // Tidak upload foto baru, tapi user menekan tombol hapus (X) — bersihkan foto lama.
+            Storage::disk('public')->delete($product->foto);
+            $data['foto'] = null;
         }
  
+        unset($data['hapus_foto']);
         $product->update($data);
  
         return redirect()->route('owner.products.index')->with('status', 'Produk berhasil diperbarui.');
