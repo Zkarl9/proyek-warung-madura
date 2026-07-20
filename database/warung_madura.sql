@@ -1,10 +1,3 @@
--- =====================================================================
---  warung_madura.sql
---  Skema database MANUAL untuk aplikasi Warung Madura (Laravel).
---  Tidak memakai migration. Tidak memakai tabel session/cache/jobs
---  bawaan Laravel (driver session/cache/queue diarahkan ke file/sync).
--- =====================================================================
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -27,16 +20,6 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------
--- password_reset_tokens
--- ---------------------------------------------------------------------
-CREATE TABLE `password_reset_tokens` (
-  `email` VARCHAR(255) NOT NULL,
-  `token` VARCHAR(255) NOT NULL,
-  `created_at` TIMESTAMP NULL DEFAULT NULL,
-  PRIMARY KEY (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ---------------------------------------------------------------------
 -- products
 -- ---------------------------------------------------------------------
 CREATE TABLE `products` (
@@ -48,7 +31,6 @@ CREATE TABLE `products` (
   `kategori` VARCHAR(255) NULL DEFAULT NULL,
   `stok_pajangan` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Stok aktual hasil deteksi kamera',
   `status_kamera` ENUM('ada','habis') NOT NULL DEFAULT 'ada',
-  `stok_deteksi_terakhir` INT UNSIGNED NULL DEFAULT NULL COMMENT 'Angka mentah terakhir dari kamera YOLO',
   `harga` BIGINT UNSIGNED NOT NULL DEFAULT 0,
   `satuan` VARCHAR(255) NOT NULL DEFAULT 'pcs',
   `foto` VARCHAR(255) NULL DEFAULT NULL,
@@ -64,8 +46,6 @@ CREATE TABLE `products` (
 CREATE TABLE `notification_settings` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` BIGINT UNSIGNED NOT NULL,
-  `wa_number` VARCHAR(255) NULL DEFAULT NULL,
-  `fonnte_token` VARCHAR(255) NULL DEFAULT NULL,
   `telegram_chat_id` VARCHAR(255) NULL DEFAULT NULL,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
   `created_at` TIMESTAMP NULL DEFAULT NULL,
