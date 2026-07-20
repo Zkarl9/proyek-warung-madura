@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -26,11 +25,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'store']);
 });
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
-
-// Announcement (dismiss - shared antara owner/admin, dipanggil tanpa prefix di JS)
-Route::post('/announcements/{announcement}/dismiss', [AnnouncementController::class, 'dismiss'])
-    ->middleware('auth')
-    ->name('announcements.dismiss');
 
 // Admin
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
-use App\Models\Announcement;
 use App\Models\Product;
 use App\Models\StockMovement;
 
@@ -36,15 +35,8 @@ class DashboardController extends Controller
             ->orderBy('tanggal')
             ->get();
 
-        $pengumuman = Announcement::whereDoesntHave('dismissedBy', function ($q) {
-                $q->where('user_id', auth()->id());
-            })
-            ->latest()
-            ->limit(5)
-            ->get();
-
         return view('owner.dashboard', compact(
-            'barangHabis', 'totalProduk', 'omzetHariIni', 'recentSales', 'barangTerlaris', 'grafikMingguan', 'pengumuman'
+            'barangHabis', 'totalProduk', 'omzetHariIni', 'recentSales', 'barangTerlaris', 'grafikMingguan'
         ));
     }
 }

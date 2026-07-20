@@ -7,55 +7,6 @@
 @section('content')
 <div class="space-y-6">
  
-    {{-- PENGUMUMAN DARI ADMIN --}}
-    @if ($pengumuman->isNotEmpty())
-        @foreach ($pengumuman as $pengumumanItem)
-        <div id="announcementCard-{{ $pengumumanItem->id }}" class="bg-gradient-to-r from-blue-50 to-indigo-50/50 border border-blue-100 rounded-2xl p-5 relative overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md">
-            <div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-blue-600 to-indigo-600"></div>
-            <div class="pl-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div class="min-w-0 flex-1">
-                        <div class="flex items-center gap-2.5 mb-2">
-                            <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-blue-600 text-white rounded-full shadow-sm shadow-blue-100">
-                                <span>📢</span> Pengumuman Admin
-                            </span>
-                            <span class="text-xs font-medium text-slate-400">{{ $pengumumanItem->created_at->diffForHumans() }}</span>
-                        </div>
-                        <h4 class="font-bold text-slate-800 text-base mb-1">{{ $pengumumanItem->judul }}</h4>
-                        <p class="text-sm text-slate-600 leading-relaxed">{{ $pengumumanItem->isi }}</p>
-                        
-                        @if ($pengumumanItem->label_ids)
-                        <div class="mt-3.5 bg-white/60 backdrop-blur-sm border border-blue-100/80 rounded-xl p-3">
-                            <p class="text-xs text-blue-700 font-semibold mb-2 flex items-center gap-1">
-                                <span>🏷️</span> Label YOLO yang bisa digunakan:
-                            </p>
-                            <div class="flex flex-wrap gap-1.5">
-                                @foreach (explode(',', $pengumumanItem->label_ids) as $label)
-                                <code class="px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-mono rounded-lg font-bold shadow-sm">
-                                    {{ trim($label) }}
-                                </code>
-                                @endforeach
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-                    
-                    <div class="flex items-center gap-2 sm:self-start flex-shrink-0">
-                        <a href="{{ route('owner.products.index') }}"
-                           class="inline-flex items-center justify-center text-xs font-semibold bg-white text-blue-600 border border-blue-200 px-4 py-2 rounded-xl hover:bg-blue-50 hover:text-blue-700 transition active:scale-95 shadow-sm">
-                            Lihat Produk
-                        </a>
-                        <button type="button" class="dismissAnnouncement inline-flex items-center justify-center text-xs font-semibold bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition active:scale-95 shadow-md shadow-blue-200"
-                            data-announcement-id="{{ $pengumumanItem->id }}">
-                            Mengerti
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endforeach
-    @endif
- 
     {{-- HEADER --}}
     <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
         <div class="absolute right-0 top-0 translate-x-1/4 -translate-y-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -263,46 +214,6 @@
  
 @push('scripts')
 <script>
-    const announcementKey = 'ownerAnnouncementDismissed';
-    const announcementIds = @json($pengumuman->pluck('id')->values());
- 
-    function getDismissedAnnouncements() {
-        try {
-            const stored = JSON.parse(localStorage.getItem(announcementKey));
-            if (Array.isArray(stored)) return stored.map(Number).filter((value) => !Number.isNaN(value));
-            if (typeof stored === 'number') return [stored];
-            if (typeof stored === 'number' && typeof stored === 'string' && stored.trim().length > 0) {
-                const parsed = Number(stored);
-                return Number.isNaN(parsed) ? [] : [parsed];
-            }
-            return [];
-        } catch { return []; }
-    }
- 
-    function isAnnouncementDismissed(id) { return getDismissedAnnouncements().includes(Number(id)); }
- 
-    function dismissAnnouncement(id) {
-        const dismissed = getDismissedAnnouncements();
-        const numericId = Number(id);
-        if (!dismissed.includes(numericId)) {
-            dismissed.push(numericId);
-            localStorage.setItem(announcementKey, JSON.stringify(dismissed));
-        }
-    }
- 
-    function hideAnnouncementCard(id) { document.getElementById(`announcementCard-${id}`)?.classList.add('hidden'); }
- 
-    announcementIds.forEach(function (id) { if (isAnnouncementDismissed(id)) { hideAnnouncementCard(id); } });
- 
-    document.querySelectorAll('.dismissAnnouncement').forEach(function (button) {
-        button.addEventListener('click', function () {
-            const id = this.dataset.announcementId;
-            if (!id) return;
-            dismissAnnouncement(id);
-            hideAnnouncementCard(id);
-        });
-    });
- 
     // 💡 PENYELESAIAN ERROR DI SINI: Kode inisialisasi Chart dibungkus DOMContentLoaded
     document.addEventListener('DOMContentLoaded', function() {
         const canvasElement = document.getElementById('grafikMingguan');
